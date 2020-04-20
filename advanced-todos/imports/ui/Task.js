@@ -2,8 +2,18 @@ import React, { Component } from 'react';
 
 import { Tasks } from '../api/tasks.js';
 
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Checkbox from '@material-ui/core/Checkbox';
+import Avatar from '@material-ui/core/Avatar';
+
 // Task component - represents a single todo item
 export default class Task extends Component {
+
   toggleChecked() {
     // Set the checked property to the opposite of its current value
     Tasks.update(this.props.task._id, {
@@ -22,6 +32,7 @@ export default class Task extends Component {
     const taskClassName = this.props.task.checked ? 'checked' : '';
 
     return (
+
       <li className={taskClassName}>
         <button className="delete" onClick={this.deleteThisTask.bind(this)}>
           &times;
@@ -37,7 +48,7 @@ export default class Task extends Component {
 
         <span className="text">
           <strong>{this.props.task.username}</strong>: {this.props.task.text}
-        </span>      
+        </span>
       </li>
     );
   }

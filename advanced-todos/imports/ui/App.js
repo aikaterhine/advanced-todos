@@ -12,6 +12,8 @@ import AccountsUIWrapper from './AccountsUIWrapper.js';
 import Welcome from './routes/Welcome.js';
 import About from './routes/About.js';
 
+import NavBar from '../components/NavBar.js';
+
 // App component - represents the whole app
 class App extends Component {
 
@@ -59,6 +61,8 @@ class App extends Component {
   render() {
     return (
       <div>
+      <NavBar />
+
       { this.props.currentUser ?
           <div className="container">
             <header>
@@ -74,7 +78,7 @@ class App extends Component {
                       />
                     Hide Completed Tasks
                   </label>
-                </div> : ''
+                </div>
 
                 <form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
                   <input
