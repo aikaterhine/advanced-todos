@@ -12,13 +12,6 @@ import AccountsUIWrapper from './AccountsUIWrapper.js';
 import Welcome from './routes/Welcome.js';
 import About from './routes/About.js';
 
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
-
 // App component - represents the whole app
 class App extends Component {
 
@@ -65,34 +58,11 @@ class App extends Component {
 
   render() {
     return (
-      <Router>
-        <div className="container">
-
-          <nav id="menu">
-            <ul>
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li>
-                <Link to="/about">About</Link>
-              </li>
-            </ul>
-          </nav>
-
-          {/* A <Switch> looks through its children <Route>s and
-                renders the first one that matches the current URL. */}
-
-          <Switch>
-
-            <Route path="/about">
-              <About />
-            </Route>
-
-            <Route path="/">
-              <Welcome />
-
-              <div className="container">
-                <header>
+      <div>
+      { this.props.currentUser ?
+          <div className="container">
+            <header>
+                <div>
                   <h1>Todo List ({this.props.incompleteCount})</h1>
 
                   <label className="hide-completed">
@@ -101,33 +71,26 @@ class App extends Component {
                       readOnly
                       checked={this.state.hideCompleted}
                       onClick={this.toggleHideCompleted.bind(this)}
-                    />
+                      />
                     Hide Completed Tasks
                   </label>
+                </div> : ''
 
-                  <AccountsUIWrapper />
+                <form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
+                  <input
+                    type="text"
+                    ref="textInput"
+                    placeholder="Type to add new tasks"
+                  />
+                </form>
+            </header>
 
-                  { this.props.currentUser ?
-                    <form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
-                      <input
-                        type="text"
-                        ref="textInput"
-                        placeholder="Type to add new tasks"
-                      />
-                    </form> : ''
-                  }
-
-                </header>
-
-                <ul>
-                  {this.renderTasks()}
-                </ul>
-              </div>
-            </Route>
-
-          </Switch>
-        </div>
-      </Router>
+            <ul>
+              {this.renderTasks()}
+            </ul>
+        </div> : ''
+      }
+      </div>
     );
   }
 }
