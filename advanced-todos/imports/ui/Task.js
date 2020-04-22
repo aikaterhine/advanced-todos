@@ -10,9 +10,20 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Checkbox from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
+import { withStyles } from '@material-ui/core/styles';
+
+import CheckboxListSecondary from '../components/CheckboxListSecondary.js';
+import Typography from '@material-ui/core/Typography';
+
+const styles = theme => ({
+  root: {
+    width: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
+});
 
 // Task component - represents a single todo item
-export default class Task extends Component {
+class Task extends Component {
 
   toggleChecked() {
     // Set the checked property to the opposite of its current value
@@ -26,30 +37,42 @@ export default class Task extends Component {
   }
 
   render() {
+    const { classes } = this.props;
 
     // Give tasks a different className when they are checked off,
     // so that we can style them nicely in CSS
     const taskClassName = this.props.task.checked ? 'checked' : '';
 
+    /*<button className="delete" onClick={this.deleteThisTask.bind(this)}>
+      &times;
+    </button>
+
+    <input
+      type="checkbox"
+      readOnly
+      checked={!!this.props.task.checked}
+      onClick={this.toggleChecked.bind(this)}
+    />*/
+
     return (
 
-      <li className={taskClassName}>
-        <button className="delete" onClick={this.deleteThisTask.bind(this)}>
-          &times;
-        </button>
-
-        <input
-          type="checkbox"
-          readOnly
-          checked={!!this.props.task.checked}
-          onClick={this.toggleChecked.bind(this)}
-        />
-
+      <List dense className={classes.root}>
 
         <span className="text">
-          <strong>{this.props.task.username}</strong>: {this.props.task.text}
+          <ListItem key={this.props.task.username} button>
+            <ListItemAvatar>
+              <Avatar
+                alt={`Avatar n°${0 + 1}`}
+                src={`/static/images/avatar/${0 + 1}.jpg`}
+              />
+            </ListItemAvatar>
+            <ListItemText id={this.props.task.username} primary={this.props.task.text} secondary={this.props.task.username}/>
+            <ListItemSecondaryAction>
+            </ListItemSecondaryAction>
+          </ListItem>
         </span>
-      </li>
+      </List>
     );
   }
 }
+export default withStyles(styles)(Task);
