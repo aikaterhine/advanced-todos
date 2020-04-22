@@ -1,3 +1,4 @@
+import 'typeface-roboto';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
@@ -7,12 +8,20 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Tasks } from '../api/tasks.js';
 
 import Task from './Task.js';
+import TextField from '@material-ui/core/TextField';
+import { makeStyles } from '@material-ui/core/styles';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 import Welcome from './routes/Welcome.js';
 import About from './routes/About.js';
 
 import NavBar from '../components/NavBar.js';
+import Button from '@material-ui/core/Button';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
+import Typography from '@material-ui/core/Typography';
+
 
 // App component - represents the whole app
 class App extends Component {
@@ -61,37 +70,42 @@ class App extends Component {
   render() {
     return (
       <div>
-      <NavBar />
 
       { this.props.currentUser ?
           <div className="container">
             <header>
                 <div>
-                  <h1>Todo List ({this.props.incompleteCount})</h1>
+                  <Typography variant="h3" gutterBottom>
+                    Todo List ({this.props.incompleteCount})
+                  </Typography>
 
-                  <label className="hide-completed">
-                    <input
-                      type="checkbox"
-                      readOnly
-                      checked={this.state.hideCompleted}
-                      onClick={this.toggleHideCompleted.bind(this)}
-                      />
-                    Hide Completed Tasks
-                  </label>
+                    <FormControlLabel className="hide-completed"
+                            control={
+                              <Switch
+                                checked={this.state.hideCompleted}
+                                onChange={this.toggleHideCompleted.bind(this)}
+                                name="checkedB"
+                                color="primary"
+                              />
+                            }
+                            label="Ocultar tarefas completadas"
+                          />
                 </div>
 
-                <form className="new-task" onSubmit={this.handleSubmit.bind(this)} >
-                  <input
-                    type="text"
-                    ref="textInput"
-                    placeholder="Type to add new tasks"
-                  />
-                </form>
+                  <form className="new-task">
+                    <div>
+                      <TextField
+                        id="outlined-helperText"
+                        label="Nova Tarefa"
+                        defaultValue="Digite para adicionar..."
+                        variant="outlined"
+                      />
+                    </div>
+                  </form>
+
             </header>
 
-            <ul>
-              {this.renderTasks()}
-            </ul>
+            {this.renderTasks()}
         </div> : ''
       }
       </div>
