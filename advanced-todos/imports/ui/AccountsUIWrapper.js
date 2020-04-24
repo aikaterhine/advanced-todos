@@ -5,7 +5,6 @@ import { Blaze } from 'meteor/blaze';
 import { Link } from 'react-router-dom';
 
 import App from './App.js';
-import SimpleMenu from '../components/SimpleMenu.js';
 
 export default class AccountsUIWrapper extends Component {
   componentDidMount() {

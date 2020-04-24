@@ -11,9 +11,6 @@ export default class Home extends Component {
     // Just render a placeholder container that will be filled in
     return(
       <span ref="container">
-        <header>
-          <h1>HOME</h1>
-        </header>
       </span>
     );
   }

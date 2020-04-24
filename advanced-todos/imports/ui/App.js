@@ -12,16 +12,11 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
-import Welcome from './routes/Welcome.js';
-import About from './routes/About.js';
 
-import NavBar from '../components/NavBar.js';
 import Button from '@material-ui/core/Button';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
-
 
 // App component - represents the whole app
 class App extends Component {
