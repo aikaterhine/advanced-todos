@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import { Tasks } from '../api/tasks.js';
 
-import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -12,19 +11,27 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Avatar from '@material-ui/core/Avatar';
 import { withStyles } from '@material-ui/core/styles';
 
-import CheckboxListSecondary from '../components/CheckboxListSecondary.js';
-import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
+
+import About from './routes/About.js';
+import EditTask from './EditTask.js';
 
 const styles = theme => ({
   root: {
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
+  button: {
+    margin: theme.spacing(1),
+  }
 });
 
 // Task component - represents a single todo item
 class Task extends Component {
-
   toggleChecked() {
     // Set the checked property to the opposite of its current value
     Tasks.update(this.props.task._id, {
@@ -36,6 +43,10 @@ class Task extends Component {
     Tasks.remove(this.props.task._id);
   }
 
+  editThisTask(){
+    EditTask.edit(this.props.task._id);
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -43,21 +54,8 @@ class Task extends Component {
     // so that we can style them nicely in CSS
     const taskClassName = this.props.task.checked ? 'checked' : '';
 
-    /*<button className="delete" onClick={this.deleteThisTask.bind(this)}>
-      &times;
-    </button>
-
-    <input
-      type="checkbox"
-      readOnly
-      checked={!!this.props.task.checked}
-      onClick={this.toggleChecked.bind(this)}
-    />*/
-
     return (
-
       <List dense className={classes.root}>
-
         <span className="text">
           <ListItem key={this.props.task.username} button>
             <ListItemAvatar>
@@ -66,9 +64,16 @@ class Task extends Component {
                 src={`/static/images/avatar/${0 + 1}.jpg`}
               />
             </ListItemAvatar>
-            <ListItemText id={this.props.task.username} primary={this.props.task.text} secondary={this.props.task.username}/>
-            <ListItemSecondaryAction>
-            </ListItemSecondaryAction>
+            <ListItemText id={this.props.task.username} primary={this.props.task.username} secondary={this.props.task.username}/>
+              <IconButton aria-label="edit" onClick={this.editThisTask.bind(this)}>
+                <EditIcon/>
+              </IconButton>
+
+              <IconButton aria-label="delete" onClick={this.deleteThisTask.bind(this)}>
+                <DeleteIcon>
+                  &times
+                </DeleteIcon>
+              </IconButton>
           </ListItem>
         </span>
       </List>
