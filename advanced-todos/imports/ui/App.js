@@ -1,4 +1,3 @@
-import 'typeface-roboto';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Meteor } from 'meteor/meteor';
@@ -14,9 +13,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import AccountsUIWrapper from './AccountsUIWrapper.js';
 
 import Button from '@material-ui/core/Button';
+import Icon from '@material-ui/core/Icon';
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
+
+import AddChoreForm from '../components/AddChoreForm.js'
 
 // App component - represents the whole app
 class App extends Component {
@@ -29,14 +32,16 @@ class App extends Component {
     };
   }
 
-  handleSubmit(event) {
+  handleSubmit2(event) {
     event.preventDefault();
 
     // Find the text field via the React ref
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
 
     Tasks.insert({
-      text,
+      text: text,
+      description: '',
+      state: "Cadastrada",
       createdAt: new Date(), // current time
       owner: Meteor.userId(),           // _id of logged in user
       username: Meteor.user().username,  // username of logged in user
@@ -63,6 +68,7 @@ class App extends Component {
   }
 
   render() {
+
     return (
       <div>
 
@@ -86,18 +92,10 @@ class App extends Component {
                             label="Ocultar tarefas completadas"
                           />
                 </div>
+                  <AddChoreForm />
+                <div>
 
-                  <form className="new-task">
-                    <div>
-                      <TextField
-                        id="outlined-helperText"
-                        label="Nova Tarefa"
-                        defaultValue="Digite para adicionar..."
-                        variant="outlined"
-                      />
-                    </div>
-                  </form>
-
+                </div>
             </header>
 
             {this.renderTasks()}
