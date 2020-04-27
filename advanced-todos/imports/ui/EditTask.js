@@ -1,8 +1,10 @@
+import 'date-fns';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ReactDOM from 'react-dom';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
+import { Tasks } from '../api/tasks.js';
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -20,6 +22,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Icon from '@material-ui/core/Icon';
+
+import Grid from '@material-ui/core/Grid';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 
 const styles = theme => ({
   root: {
@@ -42,6 +52,16 @@ class EditTask extends Component {
     };
   }
 
+  toogleTask(taskId) {
+    // Set the checked property to the opposite of its current value
+    Tasks.update(taskId, {
+      $set: { text: !this.props.task.checked },
+      $set: { description: !this.props.task.checked },
+      $set: { state: !this.props.task.checked },
+      $set: { createdAt: !this.props.task.checked },
+    });
+  }
+
   toggleEdition() {
     this.setState({
       edition: !this.state.edition,
@@ -53,18 +73,17 @@ class EditTask extends Component {
 
       <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
 
-        { sita == "Cadastrada" ?
+        { sita === "Cadastrada" || sita === "Em Andamento" || sita === "Concluída" ?
           <Button
             variant="contained"
             color="primary"
             endIcon={<Icon>send</Icon>}
-            disabled
           >
             Cadastrada
-          </Button> : <Button variant="contained" color="primary" endIcon={<Icon>send</Icon>}> Cadastrada </Button>
+          </Button> : ''
         }
 
-        { sita == "Em Andamento" ?
+        { sita == "Em Andamento" || sitp !== "Em Andamento"?
             <Button
               variant="contained"
               color="primary"
@@ -75,7 +94,7 @@ class EditTask extends Component {
             </Button> : <Button variant="contained" color="primary" endIcon={<Icon>send</Icon>}> Em andamento </Button>
         }
 
-          { sita == "Concluída" ?
+          { sita == "Concluída" || sitp !== "Concluída"?
             <Button
               variant="contained"
               color="primary"
@@ -129,8 +148,12 @@ class EditTask extends Component {
             <TextField
               id="outlined-helperText"
               label="Data"
-              defaultValue="Digite para adicionar..."
+              type="date"
+              defaultValue="2017-05-24"
               variant="outlined"
+              InputLabelProps={{
+                shrink: true,
+              }}
             />
           </ListItem>
 
@@ -140,7 +163,17 @@ class EditTask extends Component {
               label="Usuário"
               defaultValue="Digite para adicionar..."
               variant="outlined"
+              disabled
             />
+          </ListItem>
+
+          <ListItem>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<Icon>send</Icon>}>
+              Atualizar
+            </Button>
           </ListItem>
         </span>
       </List>
@@ -149,8 +182,8 @@ class EditTask extends Component {
 
   renderTask(){
 
-    const situacaopossivel = ["Cadastrada", "Em Andamento", "Concluída"];
-    const situacaoatual = "Concluída"
+    const situacaopossivel = "Em Andamento";
+    const situacaoatual = "Cadastrada"
 
     return(
       <List dense className={''}>
@@ -179,7 +212,7 @@ class EditTask extends Component {
             <TextField
               id="outlined-helperText"
               label="Situação"
-              defaultValue="cadastrada"
+              defaultValue="Cadastrada"
               variant="outlined"
               disabled
             />
@@ -192,8 +225,12 @@ class EditTask extends Component {
             <TextField
               id="outlined-helperText"
               label="Data"
-              defaultValue="Digite para adicionar..."
+              type="date"
+              defaultValue="2017-05-24"
               variant="outlined"
+              InputLabelProps={{
+                shrink: true,
+              }}
               disabled
             />
           </ListItem>

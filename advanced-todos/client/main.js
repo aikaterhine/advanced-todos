@@ -11,13 +11,21 @@ import EditTask from '../imports/ui/EditTask.js';
 
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 
+import {Provider} from 'react-redux'
+import configureStore from '../imports/store/configure_store.js';
+
+const store = configureStore();
+console.log(store.getState());
+
 Meteor.startup(() => {
   render(
-    <BrowserRouter>
-      <Switch>
-        <Route path="/" exact={true} component={EditTask} />
-        <Route path="/about" component={About} />
-      </Switch>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Switch>
+          <Route path="/" exact={true} component={AccountsUIWrapper} />
+          <Route path="/about" component={About} />
+        </Switch>
+      </BrowserRouter>
+    </Provider>
     , document.getElementById('render-target'));
 });

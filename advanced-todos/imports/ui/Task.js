@@ -64,7 +64,7 @@ class Task extends Component {
                 src={`/static/images/avatar/${0 + 1}.jpg`}
               />
             </ListItemAvatar>
-            <ListItemText id={this.props.task.username} primary={this.props.task.username} secondary={this.props.task.username}/>
+            <ListItemText id={this.props.task.username} primary={this.props.task.text} secondary={this.props.task.username}/>
               <IconButton aria-label="edit" onClick={this.editThisTask.bind(this)}>
                 <EditIcon/>
               </IconButton>
