@@ -39,12 +39,14 @@ class AddChoreForm extends Component {
     this.setState({
         name: event.target.value
       });
+    console.log(event.target.value);
   }
 
   handleDescription(event) {
     this.setState({
         description: event.target.value
       });
+      console.log(event.target.value);
   }
 
   handleSubmit(event){
@@ -94,6 +96,12 @@ class AddChoreForm extends Component {
           endIcon={<Icon>send</Icon>}>Cancel</Button>,
     ];
 
+/*
+<TextField hinttext="What chore needs to be completed?" value={this.state.name} onChange={this.handleName}/><br/>
+<TextField hinttext="What chore needs to be completed?" value={this.state.description} onChange={this.handleDescription}/><br/>
+
+ */
+
     return (
       <div>
         <Button tooltip="Add Chore" onClick={this.handleOpen}>
@@ -106,9 +114,6 @@ class AddChoreForm extends Component {
           open={this.state.open}>
 
           <form>
-
-          <TextField hinttext="What chore needs to be completed?" value={this.state.name} onChange={this.handleName}/><br/>
-
             <TextField
               label="Nome"
               hinttext="Digite para adicionar..."
