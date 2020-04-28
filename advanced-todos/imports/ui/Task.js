@@ -16,6 +16,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
+import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 
 import About from './routes/About.js';
 import EditTask from './EditTask.js';
@@ -32,6 +35,14 @@ const styles = theme => ({
 
 // Task component - represents a single todo item
 class Task extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.openThisTask = this.openThisTask.bind(this);
+    this.deleteThisTask = this.deleteThisTask.bind(this);
+  }
+
   toggleChecked() {
     // Set the checked property to the opposite of its current value
     Tasks.update(this.props.task._id, {
@@ -43,8 +54,13 @@ class Task extends Component {
     Tasks.remove(this.props.task._id);
   }
 
-  editThisTask(){
-    EditTask.edit(this.props.task._id);
+  openThisTask(){
+    console.log(this.props.task.name);
+    return(
+      <Router>
+          <Route path="/edittask" render={(props)=> <EditTask {...props} id={this.props.task._id} task={this.props.task} isAuthed={true}/>} />
+      </Router>
+    );
   }
 
   render() {
@@ -64,12 +80,15 @@ class Task extends Component {
                 src={`/static/images/avatar/${0 + 1}.jpg`}
               />
             </ListItemAvatar>
-            <ListItemText id={this.props.task.username} primary={this.props.task.text} secondary={this.props.task.username}/>
-              <IconButton aria-label="edit" onClick={this.editThisTask.bind(this)}>
-                <EditIcon/>
-              </IconButton>
+            <ListItemText id={this.props.task.username} primary={this.props.task.name} secondary={this.props.task.username}/>
 
-              <IconButton aria-label="delete" onClick={this.deleteThisTask.bind(this)}>
+              <Link to="edittask">
+                <IconButton aria-label="open" onClick={this.openThisTask}>
+                  <OpenInNewIcon/>
+                </IconButton>
+              </Link>
+
+              <IconButton aria-label="delete" onClick={this.deleteThisTask}>
                 <DeleteIcon>
                   &times
                 </DeleteIcon>

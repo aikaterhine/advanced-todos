@@ -22,7 +22,6 @@ export default class AccountsUIWrapper extends Component {
       <span>
         <header ref="container">
         </header>
-        <App />
       </span>
     );
   }
