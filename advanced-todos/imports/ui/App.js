@@ -39,7 +39,7 @@ class App extends Component {
     const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
 
     Tasks.insert({
-      text: text,
+      name: text,
       description: '',
       state: "Cadastrada",
       createdAt: new Date(), // current time
@@ -71,7 +71,7 @@ class App extends Component {
 
     return (
       <div>
-
+      <AccountsUIWrapper />
       { this.props.currentUser ?
           <div className="container">
             <header>
@@ -91,6 +91,7 @@ class App extends Component {
                             }
                             label="Ocultar tarefas completadas"
                           />
+
                 </div>
                   <AddChoreForm />
                 <div>

@@ -15,7 +15,6 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 
@@ -30,6 +29,12 @@ import {
   KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
+
+import AccountsUIWrapper from './AccountsUIWrapper.js';
+
+import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
+import Switch from '@material-ui/core/Switch';
 
 const styles = theme => ({
   root: {
@@ -49,13 +54,14 @@ class EditTask extends Component {
 
     this.state = {
       edition: false,
+      name: this.props.name,
     };
   }
 
   toogleTask(taskId) {
     // Set the checked property to the opposite of its current value
     Tasks.update(taskId, {
-      $set: { text: !this.props.task.checked },
+      $set: { name: !this.props.task.checked },
       $set: { description: !this.props.task.checked },
       $set: { state: !this.props.task.checked },
       $set: { createdAt: !this.props.task.checked },
@@ -88,7 +94,7 @@ class EditTask extends Component {
               variant="contained"
               color="primary"
               endIcon={<Icon>send</Icon>}
-              disabled
+              disabled={!this.state.edition}
             >
               Em Andamento
             </Button> : <Button variant="contained" color="primary" endIcon={<Icon>send</Icon>}> Em andamento </Button>
@@ -99,7 +105,7 @@ class EditTask extends Component {
               variant="contained"
               color="primary"
               endIcon={<Icon>send</Icon>}
-              disabled
+              disabled={!this.state.edition}
             >
               Concluída
             </Button> : <Button variant="contained" color="primary" endIcon={<Icon>send</Icon>}> Concluída </Button>
@@ -107,12 +113,13 @@ class EditTask extends Component {
       </ButtonGroup>
     );
   }
-
+/*
   editTask(){
     return(
+
       <List dense className={''}>
         <span className="text">
-          <ListItem key={''} text>
+          <ListItem key={''} text="true">
             <TextField
               id="outlined-helperText"
               label="Nome"
@@ -121,7 +128,7 @@ class EditTask extends Component {
             />
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key={''} text="true">
             <TextField
               id="outlined-helperText"
               label="Descrição"
@@ -130,7 +137,7 @@ class EditTask extends Component {
             />
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key={''} text="true">
             <TextField
                 id="outlined-helperText"
                 label="Situação"
@@ -144,7 +151,7 @@ class EditTask extends Component {
             </TextField>
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key={''} text="true">
             <TextField
               id="outlined-helperText"
               label="Data"
@@ -157,13 +164,13 @@ class EditTask extends Component {
             />
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key={''} text="true">
             <TextField
               id="outlined-helperText"
               label="Usuário"
               defaultValue="Digite para adicionar..."
               variant="outlined"
-              disabled
+              disabled={!this.state.edition}
             />
           </ListItem>
 
@@ -179,7 +186,7 @@ class EditTask extends Component {
       </List>
     );
   }
-
+*/
   renderTask(){
 
     const situacaopossivel = "Em Andamento";
@@ -188,40 +195,45 @@ class EditTask extends Component {
     return(
       <List dense className={''}>
         <span className="text">
-          <ListItem key={''} text>
+          <ListItem key="name" text="true">
             <TextField
               id="outlined-helperText"
               label="Nome"
               defaultValue="Digite para adicionar..."
               variant="outlined"
-              disabled
+              disabled={!this.state.edition}
             />
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key="description" text="true">
             <TextField
               id="outlined-helperText"
               label="Descrição"
               defaultValue="Digite para adicionar..."
               variant="outlined"
-              disabled
+              disabled={!this.state.edition}
             />
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key="state" text="true">
             <TextField
               id="outlined-helperText"
               label="Situação"
               defaultValue="Cadastrada"
               variant="outlined"
-              disabled
-            />
+              disabled={!this.state.edition}
+              select="true"
+            >
+              <MenuItem value="1">Cadastrada</MenuItem>
+              <MenuItem value="2">Em Andamento</MenuItem>
+              <MenuItem value="3">Concluída</MenuItem>
+            </TextField>
 
-            { this.updateSituation(situacaopossivel, situacaoatual) }
+            { !this.state.edition ? this.updateSituation(situacaopossivel, situacaoatual) : '' }
 
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key="data" text="true">
             <TextField
               id="outlined-helperText"
               label="Data"
@@ -231,17 +243,17 @@ class EditTask extends Component {
               InputLabelProps={{
                 shrink: true,
               }}
-              disabled
+              disabled={!this.state.edition}
             />
           </ListItem>
 
-          <ListItem key={''} text>
+          <ListItem key="owner" text="true">
             <TextField
               id="outlined-helperText"
               label="Usuário"
               defaultValue="Digite para adicionar..."
               variant="outlined"
-              disabled
+              disabled={!this.state.edition}
             />
           </ListItem>
         </span>
@@ -254,27 +266,25 @@ class EditTask extends Component {
 
     return (
       <div>
+        <AccountsUIWrapper />
+
           <div className="container">
             <header>
                 <div>
                   <Typography variant="h3" gutterBottom>
-                    Todo List - Edit
+                      Todo List: Task Edition
                     <FormControlLabel className="edit-mode"
                       control={
-                        <Switch
-                          checked={this.state.edition}
-                          onChange={this.toggleEdition.bind(this)}
-                          name="checkedB"
-                          color="primary"
-                        />
+                        <IconButton aria-label="edit" checked={this.state.edition} onClick={this.toggleEdition.bind(this)}>
+                          <EditIcon/>
+                        </IconButton>
                       }
-                      label="Editar"
                     />
                   </Typography>
                 </div>
             </header>
 
-            { this.state.edition ? this.editTask() : this.renderTask() }
+            {this.renderTask()}
         </div>
       </div>
     );

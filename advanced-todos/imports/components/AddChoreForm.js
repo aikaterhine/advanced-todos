@@ -32,6 +32,7 @@ class AddChoreForm extends Component {
 
     this.handleName = this.handleName.bind(this);
     this.handleDescription = this.handleDescription.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this)
     this.handleClose = this.handleClose.bind(this)
   }
 
@@ -39,14 +40,12 @@ class AddChoreForm extends Component {
     this.setState({
         name: event.target.value
       });
-    console.log(event.target.value);
   }
 
   handleDescription(event) {
     this.setState({
         description: event.target.value
       });
-      console.log(event.target.value);
   }
 
   handleSubmit(event){
@@ -96,11 +95,6 @@ class AddChoreForm extends Component {
           endIcon={<Icon>send</Icon>}>Cancel</Button>,
     ];
 
-/*
-<TextField hinttext="What chore needs to be completed?" value={this.state.name} onChange={this.handleName}/><br/>
-<TextField hinttext="What chore needs to be completed?" value={this.state.description} onChange={this.handleDescription}/><br/>
-
- */
 
     return (
       <div>
