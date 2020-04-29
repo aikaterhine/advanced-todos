@@ -20,6 +20,7 @@ import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 
 import AddChoreForm from '../components/AddChoreForm.js'
+import Welcome from './routes/Welcome.js';
 
 // App component - represents the whole app
 class App extends Component {
@@ -30,25 +31,6 @@ class App extends Component {
     this.state = {
       hideCompleted: false,
     };
-  }
-
-  handleSubmit2(event) {
-    event.preventDefault();
-
-    // Find the text field via the React ref
-    const text = ReactDOM.findDOMNode(this.refs.textInput).value.trim();
-
-    Tasks.insert({
-      name: text,
-      description: '',
-      state: "Cadastrada",
-      createdAt: new Date(), // current time
-      owner: Meteor.userId(),           // _id of logged in user
-      username: Meteor.user().username,  // username of logged in user
-    });
-
-    // Clear form
-    ReactDOM.findDOMNode(this.refs.textInput).value = '';
   }
 
   toggleHideCompleted() {
@@ -62,9 +44,12 @@ class App extends Component {
     if (this.state.hideCompleted) {
       filteredTasks = filteredTasks.filter(task => !task.checked);
     }
-    return filteredTasks.map((task) => (
-      <Task key={task._id} task={task} />
-    ));
+    return filteredTasks.map((task) => {
+      const currentUserId = this.props.currentUser && this.props.currentUser._id;
+      const showPrivateButton = task.owner === currentUserId;
+
+      return (<Task key={task._id} task={task} currentUser={this.props.currentUser} showPrivateButton={showPrivateButton}/>);
+    });
   }
 
   render() {
@@ -72,6 +57,7 @@ class App extends Component {
     return (
       <div>
       <AccountsUIWrapper />
+
       { this.props.currentUser ?
           <div className="container">
             <header>
@@ -100,7 +86,7 @@ class App extends Component {
             </header>
 
             {this.renderTasks()}
-        </div> : ''
+        </div> : <div> <Welcome /> </div>
       }
       </div>
     );
@@ -108,6 +94,9 @@ class App extends Component {
 }
 
 export default withTracker(() => {
+
+  Meteor.subscribe('tasks');
+
   return {
     tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
     incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),

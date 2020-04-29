@@ -222,7 +222,7 @@ class EditTask extends Component {
               defaultValue="Cadastrada"
               variant="outlined"
               disabled={!this.state.edition}
-              select="true"
+              select={true}
             >
               <MenuItem value="1">Cadastrada</MenuItem>
               <MenuItem value="2">Em Andamento</MenuItem>

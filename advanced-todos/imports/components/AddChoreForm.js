@@ -52,16 +52,8 @@ class AddChoreForm extends Component {
 
     event.preventDefault();
 
-    const newTask = {
-      name: this.state.name,
-      description: this.state.description,
-      state: "Cadastrada",
-      createdAt: new Date(), // current time
-      owner: Meteor.userId(),           // _id of logged in user
-      username: Meteor.user().username,  // username of logged in user
-    };
+    Meteor.call('tasks.insert', this.state.name, this.state.description);
 
-    Tasks.insert(newTask);
     this.handleClose()
     this.setState({name: "", description: ""});
   }
