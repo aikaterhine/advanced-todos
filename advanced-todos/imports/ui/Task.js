@@ -21,7 +21,7 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
 
 import About from './routes/About.js';
 import EditTask from './EditTask.js';
@@ -51,34 +51,26 @@ class Task extends Component {
     this.deleteThisTask = this.deleteThisTask.bind(this);
   }
 
-  toggleChecked() {
-    // Set the checked property to the opposite of its current value
-    Tasks.update(this.props.task._id, {
-      $set: { checked: !this.props.task.checked },
-    });
-  }
-
   deleteThisTask() {
     Meteor.call('tasks.remove', this.props.task._id);
   }
 
   togglePrivate() {
     Meteor.call('tasks.setPrivate', this.props.task._id, ! this.props.task.private);
-    console.log(this.props.task.private);
   }
 
   openThisTask(){
+    console.log(this.props.task._id);
 
     let filteredTasks = this.props.task;
 
-    /*return(
+    return(
       <Router>
-          <Route path="/edittask" render={(task)=> <EditTask key={task._id} task={task} iduser={this.props.currentUser}/>
-          }/>
+          <Route exact path="/edittask" render={(props) => <EditTask {...props} name="teste" />}/>
       </Router>
-    );*/
+    );
 
-    return <EditTask key={filteredTasks._id} task={filteredTasks} iduser={this.props.currentUser}/>;
+    //return <EditTask key={filteredTasks._id} task={filteredTasks} iduser={this.props.currentUser}/>;
   }
 
   render() {
@@ -135,4 +127,4 @@ class Task extends Component {
     );
   }
 }
-export default withStyles(styles)(Task);
+export default withRouter(Task);

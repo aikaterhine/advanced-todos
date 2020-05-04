@@ -10,8 +10,6 @@ import Task from './Task.js';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 
-import AccountsUIWrapper from './AccountsUIWrapper.js';
-
 import Button from '@material-ui/core/Button';
 import Icon from '@material-ui/core/Icon';
 
@@ -20,6 +18,7 @@ import Switch from '@material-ui/core/Switch';
 import Typography from '@material-ui/core/Typography';
 
 import AddChoreForm from '../components/AddChoreForm.js'
+import ResponsiveDrawer from '../components/ResponsiveDrawer.js'
 import Welcome from './routes/Welcome.js';
 
 // App component - represents the whole app
@@ -31,6 +30,11 @@ class App extends Component {
     this.state = {
       hideCompleted: false,
     };
+  }
+
+  updateUser(){
+    Meteor.call('users.update', Meteor.userId);
+    console.log(this.props.currentUser);
   }
 
   toggleHideCompleted() {
@@ -56,8 +60,6 @@ class App extends Component {
 
     return (
       <div>
-      <AccountsUIWrapper />
-
       { this.props.currentUser ?
           <div className="container">
             <header>
@@ -78,11 +80,20 @@ class App extends Component {
                             label="Ocultar tarefas completadas"
                           />
 
-                </div>
-                  <AddChoreForm />
-                <div>
+                          <FormControlLabel className="hide-completed"
+                                  control={
+                                    <Switch
+                                      checked={this.state.hideCompleted}
+                                      onChange={this.updateUser.bind(this)}
+                                      name="checkedB"
+                                      color="primary"
+                                    />
+                                  }
+                                  label="Mudar usuario"
+                                />
 
                 </div>
+                  <AddChoreForm />
             </header>
 
             {this.renderTasks()}

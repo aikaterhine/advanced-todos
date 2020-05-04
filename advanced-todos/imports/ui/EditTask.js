@@ -2,8 +2,6 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ReactDOM from 'react-dom';
-import { Template } from 'meteor/templating';
-import { Blaze } from 'meteor/blaze';
 import { Tasks } from '../api/tasks.js';
 
 import List from '@material-ui/core/List';
@@ -36,6 +34,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Switch from '@material-ui/core/Switch';
 
+import { withTracker } from 'meteor/react-meteor-data';
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -58,14 +58,12 @@ class EditTask extends Component {
     };
   }
 
-  toogleTask(taskId) {
-    // Set the checked property to the opposite of its current value
-    Tasks.update(taskId, {
-      $set: { name: !this.props.task.checked },
-      $set: { description: !this.props.task.checked },
-      $set: { state: !this.props.task.checked },
-      $set: { createdAt: !this.props.task.checked },
-    });
+  updateTask() {
+    Meteor.call('tasks.update', "XADX65a7m8NgF4s6t", "Testando");
+  }
+
+  toggleState() {
+    Meteor.call('tasks.updateState', this.props.task._id, state);
   }
 
   toggleEdition() {
@@ -113,80 +111,7 @@ class EditTask extends Component {
       </ButtonGroup>
     );
   }
-/*
-  editTask(){
-    return(
 
-      <List dense className={''}>
-        <span className="text">
-          <ListItem key={''} text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Nome"
-              defaultValue="Digite para adicionar..."
-              variant="outlined"
-            />
-          </ListItem>
-
-          <ListItem key={''} text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Descrição"
-              defaultValue="Digite para adicionar..."
-              variant="outlined"
-            />
-          </ListItem>
-
-          <ListItem key={''} text="true">
-            <TextField
-                id="outlined-helperText"
-                label="Situação"
-                defaultValue="Digite para adicionar..."
-                variant="outlined"
-                select
-            >
-              <MenuItem value="1">Cadastrada</MenuItem>
-              <MenuItem value="2">Em Andamento</MenuItem>
-              <MenuItem value="3">Concluída</MenuItem>
-            </TextField>
-          </ListItem>
-
-          <ListItem key={''} text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Data"
-              type="date"
-              defaultValue="2017-05-24"
-              variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </ListItem>
-
-          <ListItem key={''} text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Usuário"
-              defaultValue="Digite para adicionar..."
-              variant="outlined"
-              disabled={!this.state.edition}
-            />
-          </ListItem>
-
-          <ListItem>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<Icon>send</Icon>}>
-              Atualizar
-            </Button>
-          </ListItem>
-        </span>
-      </List>
-    );
-  }
-*/
   renderTask(){
 
     const situacaopossivel = "Em Andamento";
@@ -263,6 +188,7 @@ class EditTask extends Component {
 
   render() {
     const { classes } = this.props;
+    console.log(this.props.match.params);
 
     return (
       <div>
@@ -272,10 +198,10 @@ class EditTask extends Component {
             <header>
                 <div>
                   <Typography variant="h3" gutterBottom>
-                      Todo List: Task Edition
+                      Todo List: Task Edit
                     <FormControlLabel className="edit-mode"
                       control={
-                        <IconButton aria-label="edit" checked={this.state.edition} onClick={this.toggleEdition.bind(this)}>
+                        <IconButton aria-label="edit" checked={this.state.edition} onClick={this.updateTask.bind(this)}>
                           <EditIcon/>
                         </IconButton>
                       }
