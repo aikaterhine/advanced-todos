@@ -7,6 +7,7 @@ import App from '../imports/ui/App.js';
 import Home from '../imports/ui/routes/Home.js';
 import About from '../imports/ui/routes/About.js';
 import AccountsUIWrapper from '../imports/ui/AccountsUIWrapper.js';
+import ResponsiveDrawer from '../imports/components/ResponsiveDrawer.js';
 import EditTask from '../imports/ui/EditTask.js';
 
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'

@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Template } from 'meteor/templating';
-import { Blaze } from 'meteor/blaze';
 
 //import AccountsUIWrapper from './AccountsUIWrapper.js';
 
