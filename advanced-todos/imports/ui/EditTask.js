@@ -4,6 +4,10 @@ import { withStyles } from '@material-ui/core/styles';
 import ReactDOM from 'react-dom';
 import { Tasks } from '../api/tasks.js';
 
+import * as actions from '../actions/index.js'
+import {bindActionCreators} from 'redux'
+import {connect} from 'react-redux'
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -32,9 +36,10 @@ import AccountsUIWrapper from './AccountsUIWrapper.js';
 
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
-import Switch from '@material-ui/core/Switch';
 
 import { withTracker } from 'meteor/react-meteor-data';
+import Task from './Task.js';
+import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
 
 const styles = theme => ({
   root: {
@@ -52,18 +57,84 @@ class EditTask extends Component {
   constructor(props) {
     super(props);
 
+    let id, name, description, stateT, date, ownerUsername, ownerId;
+
+    let filteredTasks = this.props.tasks;
+
+    filteredTasks.map((task) => {
+      id = task._id;
+      name = task.name;
+      description = task.description;
+      stateT = task.state;
+      date = task.createdAt;
+      ownerUsername = task.username;
+      ownerId = task.owner;
+    });
+
     this.state = {
       edition: false,
-      name: this.props.name,
+      id: id,
+      name: name,
+      description: description,
+      stateT: stateT,
+      date: date,
+      ownerUsername: ownerUsername,
+      ownerId: ownerId,
     };
+
+    this.toggleState = this.toggleState.bind(this);
   }
 
-  updateTask() {
-    Meteor.call('tasks.update', "XADX65a7m8NgF4s6t", "Testando");
+  handleName(event) {
+    this.setState({
+        name: event.target.value
+      });
   }
 
-  toggleState() {
-    Meteor.call('tasks.updateState', this.props.task._id, state);
+  handleDescription(event) {
+    this.setState({
+        description: event.target.value
+      });
+  }
+
+  handleStateT(event) {
+    this.setState({
+        stateT: event.target.value
+      });
+  }
+
+  handleDate(event) {
+    this.setState({
+        date: event.target.value
+      });
+  }
+
+  handleOwnerUsername(event) {
+    this.setState({
+        ownerUsername: event.target.value
+      });
+  }
+
+  returntoTask(){
+    return(
+      <Router>
+          <Route path="/" exact={true} render={<Task/>} />
+      </Router>
+    );
+  }
+
+  handleSubmit(event){
+
+    event.preventDefault();
+
+    Meteor.call('tasks.update', this.state.id, this.state.name, this.state.description, this.state.stateT, this.state.date);
+    this.setState({name: "", description: "", stateT: "", date: "", ownerUsername: ""});
+    returntoTask();
+  }
+
+  toggleState(event) {
+    console.log(event.target);
+    Meteor.call('tasks.updateState', this.state.id, "");
   }
 
   toggleEdition() {
@@ -72,61 +143,82 @@ class EditTask extends Component {
     });
   }
 
-  updateSituation(sitp, sita){
-    return(
+  updateSituation(){
 
+    const sita = this.state.stateT;
+    let sitp = "";
+
+    if(sita == "Cadastrada"){
+      sitp = "Em Andamento";
+    }
+    else if(sita == "Em Andamento"){
+      sitp = "Concluída";
+    }
+    else if(sita == "Concluída"){
+      sitp = "Cadastrada";
+    }
+
+    return(
+      <ListItem key="stateUpdate" text="true">
       <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
 
         { sita === "Cadastrada" || sita === "Em Andamento" || sita === "Concluída" ?
           <Button
+            label="Cadastrada"
             variant="contained"
             color="primary"
             endIcon={<Icon>send</Icon>}
+            onClick={this.toggleState.bind(this)}
           >
             Cadastrada
-          </Button> : ''
+          </Button> : <Button label="Cadastrada" variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={this.toggleState.bind(this)}> Cadastrada </Button>
         }
 
         { sita == "Em Andamento" || sitp !== "Em Andamento"?
             <Button
+              label="Em Andamento"
               variant="contained"
               color="primary"
               endIcon={<Icon>send</Icon>}
               disabled={!this.state.edition}
+              onClick={this.toggleState.bind(this)}
             >
-              Em Andamento
-            </Button> : <Button variant="contained" color="primary" endIcon={<Icon>send</Icon>}> Em andamento </Button>
+            Em Andamento
+            </Button> : <Button label="Em Andamento" variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={this.toggleState.bind(this)}> Em Andamento </Button>
         }
 
           { sita == "Concluída" || sitp !== "Concluída"?
             <Button
+              label="Concluída"
               variant="contained"
               color="primary"
               endIcon={<Icon>send</Icon>}
+              onClick={this.toggleState.bind(this)}
               disabled={!this.state.edition}
             >
-              Concluída
-            </Button> : <Button variant="contained" color="primary" endIcon={<Icon>send</Icon>}> Concluída </Button>
+            Concluída
+            </Button> : <Button label="Concluída" variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={this.toggleState()}> Concluída </Button>
           }
       </ButtonGroup>
+      </ListItem>
     );
   }
 
   renderTask(){
 
-    const situacaopossivel = "Em Andamento";
-    const situacaoatual = "Cadastrada"
-
     return(
+    <form>
       <List dense className={''}>
         <span className="text">
           <ListItem key="name" text="true">
+
             <TextField
               id="outlined-helperText"
               label="Nome"
-              defaultValue="Digite para adicionar..."
+              value= {this.state.name}
               variant="outlined"
               disabled={!this.state.edition}
+              onChange={this.handleName.bind(this)}
             />
           </ListItem>
 
@@ -134,9 +226,10 @@ class EditTask extends Component {
             <TextField
               id="outlined-helperText"
               label="Descrição"
-              defaultValue="Digite para adicionar..."
+              value={this.state.description}
               variant="outlined"
               disabled={!this.state.edition}
+              onChange={this.handleDescription.bind(this)}
             />
           </ListItem>
 
@@ -144,51 +237,68 @@ class EditTask extends Component {
             <TextField
               id="outlined-helperText"
               label="Situação"
-              defaultValue="Cadastrada"
+              value={this.state.stateT}
               variant="outlined"
               disabled={!this.state.edition}
+              onChange={this.handleStateT.bind(this)}
               select={true}
             >
-              <MenuItem value="1">Cadastrada</MenuItem>
-              <MenuItem value="2">Em Andamento</MenuItem>
-              <MenuItem value="3">Concluída</MenuItem>
+              <MenuItem value="Cadastrada">Cadastrada</MenuItem>
+              <MenuItem value="Em Andamento">Em Andamento</MenuItem>
+              <MenuItem value="Concluída">Concluída</MenuItem>
             </TextField>
-
-            { !this.state.edition ? this.updateSituation(situacaopossivel, situacaoatual) : '' }
-
           </ListItem>
+
+          { !this.state.edition ? this.updateSituation() : '' }
 
           <ListItem key="data" text="true">
             <TextField
               id="outlined-helperText"
               label="Data"
               type="date"
-              defaultValue="2017-05-24"
+              value={this.state.date}
               variant="outlined"
               InputLabelProps={{
                 shrink: true,
               }}
+              onChange={this.handleDate.bind(this)}
               disabled={!this.state.edition}
             />
           </ListItem>
 
-          <ListItem key="owner" text="true">
+          <ListItem key="ownerUsername" text="true">
             <TextField
               id="outlined-helperText"
-              label="Usuário"
-              defaultValue="Digite para adicionar..."
+              label="Usuário: "
+              value={this.state.ownerUsername}
               variant="outlined"
-              disabled={!this.state.edition}
+              onChange={this.handleOwnerUsername.bind(this)}
+              disabled={true}
             />
           </ListItem>
+
+          <ListItem key="submit" text="true">
+            <Button
+              label="Submit"
+              primary="true"
+              variant="contained"
+              color="primary"
+              type='submit'
+              onClick={this.handleSubmit.bind(this)}
+              endIcon={<Icon>send</Icon>}
+              disabled={!this.state.edition}>
+              Submit </Button>
+
+          </ListItem>
+
         </span>
       </List>
+    </form>
     );
   }
 
   render() {
     const { classes } = this.props;
-    console.log(this.props.match.params);
 
     return (
       <div>
@@ -201,7 +311,7 @@ class EditTask extends Component {
                       Todo List: Task Edit
                     <FormControlLabel className="edit-mode"
                       control={
-                        <IconButton aria-label="edit" checked={this.state.edition} onClick={this.updateTask.bind(this)}>
+                        <IconButton aria-label="edit" checked={this.state.edition} onClick={this.toggleEdition.bind(this)}>
                           <EditIcon/>
                         </IconButton>
                       }
@@ -210,10 +320,20 @@ class EditTask extends Component {
                 </div>
             </header>
 
+
             {this.renderTask()}
         </div>
       </div>
     );
   }
 }
-export default withStyles(styles)(EditTask);
+export default withTracker(() => {
+
+  Meteor.subscribe('tasks');
+
+  return {
+    tasks: Tasks.find({ modeedition: {$ne: false} }).fetch(),
+    incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
+    currentUser: Meteor.user(),
+  };
+})(EditTask);

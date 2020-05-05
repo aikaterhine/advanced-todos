@@ -32,7 +32,7 @@ Meteor.methods({
       description: description,
       state: "Cadastrada",
       private: false,
-      checked: false,
+      modeedition: false,
       createdAt: new Date(), // current time
       owner: this.userId,           // _id of logged in user
       username: Meteor.users.findOne(this.userId).username,  // username of logged in user
@@ -63,9 +63,22 @@ Meteor.methods({
 
   Tasks.update(taskId, { $set: { private: setToPrivate } });
 },
-  'tasks.updateState'(taskId, state) {
+  'tasks.setModeEdition'(taskId, setToModeEdition) {
+  check(taskId, String);
+  check(setToModeEdition, Boolean);
+
+  const task = Tasks.findOne(taskId);
+
+  // Make sure only the task owner can make a task private
+  if (task.owner !== this.userId) {
+    throw new Meteor.Error('not-authorized');
+  }
+
+  Tasks.update(taskId, { $set: { modeedition: setToModeEdition } });
+  },
+  'tasks.updateState'(taskId, stateT) {
     check(taskId, String);
-    check(state, String);
+    check(stateT, String);
 
     const task = Tasks.findOne(taskId);
 
@@ -73,13 +86,16 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
-    Tasks.update(taskId, { $set: { state: state } });
+    Tasks.update(taskId, { $set: { state: stateT } });
 
   },
-  'tasks.update'(taskId, name) {
+  'tasks.update'(taskId, name, description, stateT, date) {
 
     check(taskId, String);
     check(name, String);
+    check(description, String);
+    check(stateT, String);
+    check(date, String);
 
     const task = Tasks.findOne(taskId);
 
@@ -87,7 +103,7 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
-    Tasks.update(taskId, { $set: { name: name } });
+    Tasks.update(taskId, { $set: { name: name, description: description, state: stateT, createdAt: date} });
 
   },
 });
