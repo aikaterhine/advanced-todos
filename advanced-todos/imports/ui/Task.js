@@ -60,17 +60,13 @@ class Task extends Component {
   }
 
   openThisTask(){
-    console.log(this.props.task._id);
-
-    let filteredTasks = this.props.task;
+    Meteor.call('tasks.setModeEdition', this.props.task._id, true);
 
     return(
       <Router>
-          <Route exact path="/edittask" render={(props) => <EditTask {...props} name="teste" />}/>
+          <Route exact path="/edittask" render={(props) => <EditTask {...props}/>}/>
       </Router>
     );
-
-    //return <EditTask key={filteredTasks._id} task={filteredTasks} iduser={this.props.currentUser}/>;
   }
 
   render() {

@@ -123,7 +123,7 @@ class AddChoreForm extends Component {
               color="primary"
               type='submit'
               onClick={this.handleSubmit}
-              endIcon={<Icon>send</Icon>}>Submit</Button>,
+              endIcon={<Icon>send</Icon>}>Submit</Button>
 
               <Button
                 label="Cancel"
@@ -131,7 +131,7 @@ class AddChoreForm extends Component {
                 variant="contained"
                 color="secondary"
                 onClick={this.handleClose}
-                endIcon={<Icon>send</Icon>}>Cancel</Button>,
+                endIcon={<Icon>send</Icon>}>Cancel</Button>
           </form>
         </Dialog>
       </div>
