@@ -10,8 +10,11 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 
 import { withTracker } from 'meteor/react-meteor-data';
+import App from './App.js';
 
 import { Tasks } from '../api/tasks.js';
+
+import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
 
 const useStyles = makeStyles({
   root: {
@@ -32,13 +35,24 @@ const useStyles = makeStyles({
 
 class DashBoard extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.openTasks = this.openTasks.bind(this);
+  };
+
+
+  openTasks(){
+    console.log("entrou aqui");
+  }
+
   render() {
     // Just render a placeholder container that will be filled in
     return (
       <div className="container">
         <header>
           <div>
-            <Card className="" variant="outlined" allign>
+            <Card className="" variant="outlined" allign="true">
               <CardContent>
                 <Typography className="" color="textSecondary" gutterBottom>
                   Tarefas Cadastradas
@@ -80,7 +94,7 @@ class DashBoard extends Component {
                 { this.props.incompleteCount }
                 </Typography>
                 <CardActions>
-                  <Button size="small">Acessar</Button>
+                  <Button onClick={this.openTasks} size="small">Acessar</Button>
                 </CardActions>
               </CardContent>
             </Card>
