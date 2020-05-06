@@ -23,7 +23,7 @@ Meteor.startup(() => {
     <Provider store={store}>
       <BrowserRouter>
         <Switch>
-          <Route path="/" exact={true} component={App} />
+          <Route path="/" exact={true} component={ResponsiveDrawer} />
           <Route path="/edittask" component={EditTask} />
         </Switch>
       </BrowserRouter>

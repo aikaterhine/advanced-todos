@@ -33,6 +33,7 @@ import {
 } from '@material-ui/pickers';
 
 import AccountsUIWrapper from './AccountsUIWrapper.js';
+import Welcome from './routes/Welcome.js';
 
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -115,26 +116,26 @@ class EditTask extends Component {
       });
   }
 
-  returntoTask(){
-    return(
-      <Router>
-          <Route path="/" exact={true} render={<Task/>} />
-      </Router>
-    );
-  }
-
   handleSubmit(event){
 
     event.preventDefault();
 
     Meteor.call('tasks.update', this.state.id, this.state.name, this.state.description, this.state.stateT, this.state.date);
+    Meteor.call('tasks.setModeEdition', this.state.id, false);
     this.setState({name: "", description: "", stateT: "", date: "", ownerUsername: ""});
-    returntoTask();
+
+    return(
+      <Router>
+          <Route path="/welcome" exact={true} render={Welcome} />
+      </Router>
+    );
   }
 
   toggleState(event) {
-    console.log(event.target);
-    Meteor.call('tasks.updateState', this.state.id, "");
+
+    event.preventDefault();
+    const value = event.currentTarget.value;
+    Meteor.call('tasks.updateState', this.state.id, value);
   }
 
   toggleEdition() {
@@ -158,47 +159,42 @@ class EditTask extends Component {
       sitp = "Cadastrada";
     }
 
+    const cad = (sita !== "Cadastrada") && (sitp == "Cadastrada" || sitp == "Em Andamento" || sitp == "Concluída");
+    const ema = (sita !== "Em Andamento") && (sitp == "Em Andamento");
+    const con = (sita !== "Concluída") && (sitp == "Concluída");
+
     return(
+
       <ListItem key="stateUpdate" text="true">
       <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
 
-        { sita === "Cadastrada" || sita === "Em Andamento" || sita === "Concluída" ?
-          <Button
-            label="Cadastrada"
-            variant="contained"
-            color="primary"
-            endIcon={<Icon>send</Icon>}
-            onClick={this.toggleState.bind(this)}
-          >
-            Cadastrada
-          </Button> : <Button label="Cadastrada" variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={this.toggleState.bind(this)}> Cadastrada </Button>
-        }
+        <Button
+          value="Cadastrada"
+          variant="contained"
+          color="primary"
+          endIcon={<Icon>send</Icon>}
+          onClick={this.toggleState}
+          disabled={!cad}
+        > Cadastrada </Button>
 
-        { sita == "Em Andamento" || sitp !== "Em Andamento"?
-            <Button
-              label="Em Andamento"
-              variant="contained"
-              color="primary"
-              endIcon={<Icon>send</Icon>}
-              disabled={!this.state.edition}
-              onClick={this.toggleState.bind(this)}
-            >
-            Em Andamento
-            </Button> : <Button label="Em Andamento" variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={this.toggleState.bind(this)}> Em Andamento </Button>
-        }
+        <Button
+          value="Em Andamento"
+          variant="contained"
+          color="primary"
+          endIcon={<Icon>send</Icon>}
+          disabled={!ema}
+          onClick={this.toggleState}
+        > Em Andamento </Button>
 
-          { sita == "Concluída" || sitp !== "Concluída"?
-            <Button
-              label="Concluída"
-              variant="contained"
-              color="primary"
-              endIcon={<Icon>send</Icon>}
-              onClick={this.toggleState.bind(this)}
-              disabled={!this.state.edition}
-            >
-            Concluída
-            </Button> : <Button label="Concluída" variant="contained" color="primary" endIcon={<Icon>send</Icon>} onClick={this.toggleState()}> Concluída </Button>
-          }
+        <Button
+          value="Concluída"
+          variant="contained"
+          color="primary"
+          endIcon={<Icon>send</Icon>}
+          onClick={this.toggleState}
+          disabled={!con}
+        > Concluída </Button>
+
       </ButtonGroup>
       </ListItem>
     );
