@@ -135,10 +135,13 @@ function ResponsiveDrawer(props) {
       </nav>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-          <DashBoard />
+          <div className="container">
+            <DashBoard />
+          </div>
       </main>
     </div>
   );
 }
+
 
 export default ResponsiveDrawer;

@@ -24,8 +24,12 @@ import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
 
 import About from './routes/About.js';
+import App from './App.js';
 import EditTask from './EditTask.js';
 import classnames from 'classnames';
+import { createBrowserHistory } from "history";
+
+export const history = createBrowserHistory();
 
 const styles = theme => ({
   root: {
@@ -59,14 +63,14 @@ class Task extends Component {
     Meteor.call('tasks.setPrivate', this.props.task._id, ! this.props.task.private);
   }
 
-  openThisTask(){
-    Meteor.call('tasks.setModeEdition', this.props.task._id, true);
+  onSubmit = () => {
+    /*<Route path="/tasks" component={App} />
+    this.props.history.push('/tasks');*/
+  }
 
-    return(
-      <Router>
-          <Route exact path="/edittask" render={(props) => <EditTask {...props}/>}/>
-      </Router>
-    );
+  openThisTask() {
+    <Route path="/tasks" component={App} />
+    this.props.history.push('/tasks');
   }
 
   render() {
@@ -80,47 +84,51 @@ class Task extends Component {
     });
 
     return (
+      <div className={classes.root}>
+        <Router history={history}>
 
-      <List dense className={taskClassName}>
+        <List dense className={taskClassName}>
 
-        <span className="text">
-          <ListItem key={this.props.task.username} button>
+          <span className="text">
+            <ListItem key={this.props.task.username} button>
 
-            <ListItemAvatar>
-              <Avatar
-                alt={`Avatar n°${0 + 1}`}
-                src={`/static/images/avatar/${0 + 1}.jpg`}
-              />
-            </ListItemAvatar>
-            <ListItemText id={this.props.task.username} primary={this.props.task.name} secondary={this.props.task.username}/>
+              <ListItemAvatar>
+                <Avatar
+                  alt={`Avatar n°${0 + 1}`}
+                  src={`/static/images/avatar/${0 + 1}.jpg`}
+                />
+              </ListItemAvatar>
+              <ListItemText id={this.props.task.username} primary={this.props.task.name} secondary={this.props.task.username}/>
 
-            { this.props.showPrivateButton ? (
-              <IconButton className="toggle-private" onClick={this.togglePrivate.bind(this)}>
-                { this.props.task.private ?  <VisibilityOffIcon /> : <VisibilityIcon /> }
-              </IconButton>
-            ) : ''
-            }
-
-            { this.props.currentUser.username == this.props.task.username ?
-              <Link to="edittask">
-                <IconButton aria-label="open" onClick={this.openThisTask}>
-                  <OpenInNewIcon/>
+              { this.props.showPrivateButton ? (
+                <IconButton className="toggle-private" onClick={this.togglePrivate.bind(this)}>
+                  { this.props.task.private ?  <VisibilityOffIcon /> : <VisibilityIcon /> }
                 </IconButton>
-              </Link> : ''
-            }
+              ) : ''
+              }
 
-            { this.props.currentUser.username == this.props.task.username ?
-              <IconButton aria-label="delete" onClick={this.deleteThisTask}>
-                <DeleteIcon>
-                  &times
-                </DeleteIcon>
-              </IconButton> : ''
-            }
+              { this.props.currentUser.username == this.props.task.username ?
+                <Link to="edittask">
+                  <IconButton aria-label="open" onClick={this.onSubmit}>
+                    <OpenInNewIcon/>
+                  </IconButton>
+                </Link> : ''
+              }
 
-          </ListItem>
-        </span>
-      </List>
+              { this.props.currentUser.username == this.props.task.username ?
+                <IconButton aria-label="delete" onClick={this.deleteThisTask}>
+                  <DeleteIcon>
+                    &times
+                  </DeleteIcon>
+                </IconButton> : ''
+              }
+
+            </ListItem>
+          </span>
+        </List>
+      </Router>
+    </div>
     );
   }
 }
-export default withRouter(Task);
+export default withStyles(styles)(Task);
