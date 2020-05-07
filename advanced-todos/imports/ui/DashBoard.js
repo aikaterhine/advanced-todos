@@ -1,22 +1,32 @@
-import React, { Component } from 'react';
+import React, { Component, useState, Fragment } from 'react';
 import ReactDOM from 'react-dom';
+
+import { Router, Route, Link } from "react-router-dom";
+import { createBrowserHistory } from "history";
 
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 
 import { withTracker } from 'meteor/react-meteor-data';
 import App from './App.js';
+import Welcome from './routes/Welcome.js';
 
 import { Tasks } from '../api/tasks.js';
 
-import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
+import List from '@material-ui/core/List';
 
-const useStyles = makeStyles({
+import ListItem from '@material-ui/core/ListItem';
+
+import ListItemText from '@material-ui/core/ListItemText';
+
+const history = createBrowserHistory();
+
+const styles = theme => ({
   root: {
     minWidth: 275,
   },
@@ -41,68 +51,81 @@ class DashBoard extends Component {
     this.openTasks = this.openTasks.bind(this);
   };
 
-
   openTasks(){
     console.log("entrou aqui");
   }
 
-  render() {
+  onSubmit = () => {
+    <Route path="/tasks" component={App} />
+    this.props.history.push('/tasks');
+  }
     // Just render a placeholder container that will be filled in
-    return (
-      <div className="container">
-        <header>
-          <div>
-            <Card className="" variant="outlined" allign="true">
-              <CardContent>
-                <Typography className="" color="textSecondary" gutterBottom>
-                  Tarefas Cadastradas
-                </Typography>
-                <Typography variant="h5" component="h2">
-                { this.props.registeredState }
-                </Typography>
-              </CardContent>
-            </Card>
+  render() {
+    const { classes } = this.props;
 
-            <Card className="" variant="outlined">
-              <CardContent>
-                <Typography className="" color="textSecondary" gutterBottom>
-                  Tarefas em Andamento
-                </Typography>
-                <Typography variant="h5" component="h2">
-                { this.props.inprogressState }
-                </Typography>
-                </CardContent>
-            </Card>
+    return(
+      <div className={classes.root}>
+        <Router history={history}>
+          <div className="container">
+            <header>
+              <div>
+                <Card className="card1" variant="outlined" allign="true">
+                  <CardContent>
+                    <Typography className="" color="textSecondary" gutterBottom>
+                      Tarefas Cadastradas
+                    </Typography>
+                    <Typography variant="h5" component="h2">
+                    { this.props.registeredState }
+                    </Typography>
+                  </CardContent>
+                </Card>
 
-            <Card className="" variant="outlined">
-              <CardContent>
-                <Typography className="" color="textSecondary" gutterBottom>
-                  Tarefas Concluídas
-                </Typography>
-                <Typography variant="h5" component="h2">
-                { this.props.completedState }
-                </Typography>
-              </CardContent>
-            </Card>
+                <Card className="card2" variant="outlined">
+                  <CardContent>
+                    <Typography className="" color="textSecondary" gutterBottom>
+                      Tarefas em Andamento
+                    </Typography>
+                    <Typography variant="h5" component="h2">
+                    { this.props.inprogressState }
+                    </Typography>
+                    </CardContent>
+                </Card>
 
-            <Card className="" variant="outlined">
-              <CardContent>
-                <Typography className="" color="textSecondary" gutterBottom>
-                  Lista de Tarefas
-                </Typography>
-                <Typography variant="h5" component="h2">
-                { this.props.incompleteCount }
-                </Typography>
-                <CardActions>
-                  <Button onClick={this.openTasks} size="small">Acessar</Button>
-                </CardActions>
-              </CardContent>
-            </Card>
+                <Card className="card3" variant="outlined">
+                  <CardContent>
+                    <Typography className="" color="textSecondary" gutterBottom>
+                      Tarefas Concluídas
+                    </Typography>
+                    <Typography variant="h5" component="h2">
+                    { this.props.completedState }
+                    </Typography>
+                  </CardContent>
+                </Card>
+
+                <Card className="card4" variant="outlined">
+                  <CardContent>
+                    <Typography className="" color="textSecondary" gutterBottom>
+                      Lista de Tarefas
+                    </Typography>
+                    <Typography variant="h5" component="h2">
+                    { this.props.incompleteCount }
+                    </Typography>
+                    <CardActions>
+                      <Button component={Link} to="/" size="small" onClick={this.onSubmit}>Acessar</Button>
+                    </CardActions>
+                  </CardContent>
+                </Card>
+              </div>
+            </header>
           </div>
-        </header>
-      </div>
 
-  );
+          <main className={classes.content}>
+            <Route exact path="/" component={Welcome} />
+            <Route path="/tasks" component={App} />
+          </main>
+        </Router>
+      </div>
+    );
   }
 }
 export default withTracker(() => {
@@ -117,4 +140,4 @@ export default withTracker(() => {
     completedState: Tasks.find({ state: "Concluída" }).count(),
     currentUser: Meteor.user(),
   };
-})(DashBoard);
+})(withStyles(styles)(DashBoard));

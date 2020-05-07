@@ -1,14 +1,11 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Meteor } from 'meteor/meteor';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { render } from 'react-dom';
 
 import '../imports/startup/accounts-config.js';
-import App from '../imports/ui/App.js';
-import Home from '../imports/ui/routes/Home.js';
-import About from '../imports/ui/routes/About.js';
-import AccountsUIWrapper from '../imports/ui/AccountsUIWrapper.js';
 import ResponsiveDrawer from '../imports/components/ResponsiveDrawer.js';
-import EditTask from '../imports/ui/EditTask.js';
+import AppBarInteraction from '../imports/components/AppBarInteraction.js';
 
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 
@@ -21,12 +18,10 @@ console.log(store.getState());
 Meteor.startup(() => {
   render(
     <Provider store={store}>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/" exact={true} component={ResponsiveDrawer} />
-          <Route path="/edittask" component={EditTask} />
-        </Switch>
-      </BrowserRouter>
+      <React.Fragment>
+        <CssBaseline />
+        <AppBarInteraction />
+      </React.Fragment>
     </Provider>
     , document.getElementById('render-target'));
 });
