@@ -1,7 +1,7 @@
 import React, { Component, useState, Fragment } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Router, Route, Link } from "react-router-dom";
+import { Router, Route, Link, withRouter } from "react-router-dom";
 import { createBrowserHistory } from "history";
 
 import Button from '@material-ui/core/Button';
@@ -14,6 +14,8 @@ import CardContent from '@material-ui/core/CardContent';
 
 import { withTracker } from 'meteor/react-meteor-data';
 import App from './App.js';
+import EditTask from './EditTask.js';
+
 import Welcome from './routes/Welcome.js';
 
 import { Tasks } from '../api/tasks.js';
@@ -24,7 +26,7 @@ import ListItem from '@material-ui/core/ListItem';
 
 import ListItemText from '@material-ui/core/ListItemText';
 
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 
 const styles = theme => ({
   root: {
@@ -111,7 +113,7 @@ class DashBoard extends Component {
                     { this.props.incompleteCount }
                     </Typography>
                     <CardActions>
-                      <Button component={Link} to="/" size="small" onClick={this.onSubmit}>Acessar</Button>
+                      <Button component={Link} to="/tasks" size="small" onClick={this.onSubmit}>Acessar</Button>
                     </CardActions>
                   </CardContent>
                 </Card>
@@ -120,8 +122,8 @@ class DashBoard extends Component {
           </div>
 
           <main className={classes.content}>
-            <Route exact path="/" component={Welcome} />
             <Route path="/tasks" component={App} />
+            <Route path="/edittasks" component={EditTask} />
           </main>
         </Router>
       </div>
@@ -140,4 +142,4 @@ export default withTracker(() => {
     completedState: Tasks.find({ state: "Concluída" }).count(),
     currentUser: Meteor.user(),
   };
-})(withStyles(styles)(DashBoard));
+})(withStyles(styles)(withRouter(DashBoard)));

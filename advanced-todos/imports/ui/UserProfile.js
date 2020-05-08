@@ -53,7 +53,7 @@ const styles = theme => ({
 });
 
 // Task component - represents a single todo item
-class EditTask extends Component {
+class UserProfile extends Component {
 
   constructor(props) {
     super(props);
@@ -304,13 +304,6 @@ class EditTask extends Component {
                 <div>
                   <Typography variant="h3" gutterBottom>
                       Todo List: Task Edit
-                    <FormControlLabel className="edit-mode"
-                      control={
-                        <IconButton aria-label="edit" checked={this.state.edition} onClick={this.toggleEdition.bind(this)}>
-                          <EditIcon/>
-                        </IconButton>
-                      }
-                    />
                   </Typography>
                 </div>
             </header>
@@ -330,4 +323,4 @@ export default withTracker(() => {
     incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
     currentUser: Meteor.user(),
   };
-})(EditTask);
+})(UserProfile);

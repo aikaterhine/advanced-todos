@@ -21,15 +21,16 @@ import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 
-import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
+import { Router, Switch, Route, Link, withRouter } from 'react-router-dom'
 
 import About from './routes/About.js';
 import App from './App.js';
 import EditTask from './EditTask.js';
+import DashBoard from './DashBoard.js';
 import classnames from 'classnames';
 import { createBrowserHistory } from "history";
 
-export const history = createBrowserHistory();
+const history = createBrowserHistory();
 
 const styles = theme => ({
   root: {
@@ -50,9 +51,8 @@ class Task extends Component {
     this.state = {
       visibility: this.props.visibility,
     };
-
-    this.openThisTask = this.openThisTask.bind(this);
     this.deleteThisTask = this.deleteThisTask.bind(this);
+    this.openThisTask = this.openThisTask.bind(this);
   }
 
   deleteThisTask() {
@@ -63,14 +63,10 @@ class Task extends Component {
     Meteor.call('tasks.setPrivate', this.props.task._id, ! this.props.task.private);
   }
 
-  onSubmit = () => {
-    /*<Route path="/tasks" component={App} />
-    this.props.history.push('/tasks');*/
-  }
-
-  openThisTask() {
-    <Route path="/tasks" component={App} />
-    this.props.history.push('/tasks');
+  openThisTask = () => {
+    Meteor.call('tasks.setModeEdition', this.props.task._id, true);
+    <Route path="/edittasks" component={EditTask} />
+    this.props.history.push('/edittasks');
   }
 
   render() {
@@ -85,7 +81,7 @@ class Task extends Component {
 
     return (
       <div className={classes.root}>
-        <Router history={history}>
+        <Router history={this.props.history}>
 
         <List dense className={taskClassName}>
 
@@ -108,11 +104,9 @@ class Task extends Component {
               }
 
               { this.props.currentUser.username == this.props.task.username ?
-                <Link to="edittask">
-                  <IconButton aria-label="open" onClick={this.onSubmit}>
+                  <IconButton component={Link} to="/edittasks" aria-label="open" onClick={this.openThisTask}>
                     <OpenInNewIcon/>
-                  </IconButton>
-                </Link> : ''
+                  </IconButton> : ''
               }
 
               { this.props.currentUser.username == this.props.task.username ?
@@ -126,9 +120,13 @@ class Task extends Component {
             </ListItem>
           </span>
         </List>
+
+        <main className={classes.content}>
+            <Route path="/edittasks" component={EditTask} />
+        </main>
       </Router>
     </div>
     );
   }
 }
-export default withStyles(styles)(Task);
+export default withStyles(styles)(withRouter(Task));

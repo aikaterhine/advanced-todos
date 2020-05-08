@@ -16,9 +16,10 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import AccountsUIWrapper from '../ui/AccountsUIWrapper.js';
 import App from '../ui/App.js';
-import UserProfile from '../ui/routes/UserProfile.js';
+import UserProfile from '../ui/UserProfile.js';
 import DashBoard from '../ui/DashBoard.js';
 import Grid from "./ImageGridList.js";
+import EditTask from '../ui/EditTask.js';
 
 const drawerWidth = 240;
 const history = createBrowserHistory();
@@ -94,6 +95,9 @@ const MyDrawer = withStyles(styles)(
         <ListItem button component={Link} to="/tasks" onClick={onItemClick('Tasks')}>
           <ListItemText>Tasks</ListItemText>
         </ListItem>
+        <ListItem button component={Link} to="/edittask" onClick={onItemClick('EditTasks')}>
+          <ListItemText>EditTask</ListItemText>
+        </ListItem>
         <ListItem>
           <ListItemText>Login/Signout</ListItemText>
           <AccountsUIWrapper />
@@ -104,6 +108,7 @@ const MyDrawer = withStyles(styles)(
         <Route exact path="/" component={DashBoard} />
         <Route path="/tasks" component={App} />
         <Route path="/userprofile" component={UserProfile} />
+        <Route path="/edittask" component={EditTask} />
     </main>
     </Router>
   )
