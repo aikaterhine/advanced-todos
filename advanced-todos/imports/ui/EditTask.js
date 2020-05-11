@@ -254,9 +254,6 @@ class EditTask extends Component {
               type="date"
               value={this.state.date}
               variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
               onChange={this.handleDate.bind(this)}
               disabled={!this.state.edition}
             />
@@ -294,9 +291,8 @@ class EditTask extends Component {
   }
 
   render() {
+    console.log(this.props.tasks);
     const { classes } = this.props;
-    console.log("entrou aqui 2");
-
     return (
       <div>
           <div className="container">
@@ -321,12 +317,15 @@ class EditTask extends Component {
     );
   }
 }
-export default withTracker(() => {
+export default withTracker((props) => {
 
-  Meteor.subscribe('tasks');
+  /*const taskId = props.match && props.match.params && !!props.match.params._id
+  ? props.match.params.idTask : undefined;*/
+
+  Meteor.subscribe('tasks', "XADX65a7m8NgF4s6t");
 
   return {
-    tasks: Tasks.find({ modeedition: {$ne: false} }).fetch(),
+    tasks: Tasks.find({}).fetch(),
     incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
     currentUser: Meteor.user(),
   };

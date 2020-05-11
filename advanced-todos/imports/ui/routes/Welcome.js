@@ -12,8 +12,11 @@ export default class Welcome extends Component {
       <div className="container">
         <header>
           <div>
-              <Typography variant="h3" gutterBottom>
+              <Typography variant="h4" gutterBottom>
                 Seja Bem-Vindo!
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Você precisa logar para acessar as tarefas.
               </Typography>
           </div>
         </header>
