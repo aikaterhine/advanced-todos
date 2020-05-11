@@ -65,8 +65,10 @@ class Task extends Component {
 
   openThisTask = () => {
     Meteor.call('tasks.setModeEdition', this.props.task._id, true);
-    <Route path="/edittasks" component={EditTask} />
-    this.props.history.push('/edittasks');
+    const url = "/edittasks/" + this.props.task._id;
+    console.log(this.props.task._id);
+    <Route path={url} component={EditTask} />
+    this.props.history.push(url);
   }
 
   render() {
@@ -78,6 +80,8 @@ class Task extends Component {
       checked: this.props.task.checked,
       private: this.props.task.private,
     });
+
+    const url = "/edittasks/:" + this.props.task._id;
 
     return (
       <div className={classes.root}>
@@ -104,7 +108,8 @@ class Task extends Component {
               }
 
               { this.props.currentUser.username == this.props.task.username ?
-                  <IconButton component={Link} to="/edittasks" aria-label="open" onClick={this.openThisTask}>
+
+                  <IconButton aria-label="open" onClick={this.openThisTask}>
                     <OpenInNewIcon/>
                   </IconButton> : ''
               }
@@ -120,10 +125,6 @@ class Task extends Component {
             </ListItem>
           </span>
         </List>
-
-        <main className={classes.content}>
-            <Route path="/edittasks" component={EditTask} />
-        </main>
       </Router>
     </div>
     );
