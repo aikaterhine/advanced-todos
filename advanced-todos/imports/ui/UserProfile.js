@@ -2,7 +2,7 @@ import 'date-fns';
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import ReactDOM from 'react-dom';
-import { Tasks } from '../api/tasks.js';
+import { Users } from '../api/users.js';
 
 import * as actions from '../actions/index.js'
 import {bindActionCreators} from 'redux'
@@ -39,8 +39,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 
 import { withTracker } from 'meteor/react-meteor-data';
-import Task from './Task.js';
 import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 const styles = theme => ({
   root: {
@@ -52,39 +52,43 @@ const styles = theme => ({
   }
 });
 
-// Task component - represents a single todo item
+// User component - represents a single todo item
 class UserProfile extends Component {
 
   constructor(props) {
     super(props);
 
-    let id, name, description, stateT, date, ownerUsername, ownerId;
+    let id, name, email, gender, birthday, company, photo;
 
-    let filteredTasks = this.props.tasks;
+    let filteredUsers = this.props.users;
 
-    filteredTasks.map((task) => {
-      id = task._id;
-      name = task.name;
-      description = task.description;
-      stateT = task.state;
-      date = task.createdAt;
-      ownerUsername = task.username;
-      ownerId = task.owner;
+    filteredUsers.map((user) => {
+      id = user.name;
+      name = user.name;
+      email = user.email;
+      gender = user.name;
+      birthday = user.name;
+      company = user.name;
+      photo = user.name;
     });
 
     this.state = {
       edition: false,
       id: id,
       name: name,
-      description: description,
-      stateT: stateT,
-      date: date,
-      ownerUsername: ownerUsername,
-      ownerId: ownerId,
+      email: email,
+      gender: gender,
+      birthday: birthday,
+      company: birthday,
     };
 
-    this.toggleState = this.toggleState.bind(this);
   }
+
+  handleSubmit(event){
+
+    event.preventDefault();
+  }
+
 
   handleName(event) {
     this.setState({
@@ -92,210 +96,32 @@ class UserProfile extends Component {
       });
   }
 
-  handleDescription(event) {
+  handleEmail(event) {
     this.setState({
-        description: event.target.value
+        email: event.target.value
       });
   }
 
-  handleStateT(event) {
+  handleGender(event) {
     this.setState({
-        stateT: event.target.value
+        gender: event.target.value
       });
   }
 
-  handleDate(event) {
+  handleBirthday(event) {
     this.setState({
-        date: event.target.value
+        birthday: event.target.value
       });
   }
 
-  handleOwnerUsername(event) {
+  handleCompany(event) {
     this.setState({
-        ownerUsername: event.target.value
+        company: event.target.value
       });
-  }
-
-  handleSubmit(event){
-
-    event.preventDefault();
-
-    Meteor.call('tasks.update', this.state.id, this.state.name, this.state.description, this.state.stateT, this.state.date);
-    Meteor.call('tasks.setModeEdition', this.state.id, false);
-    this.setState({name: "", description: "", stateT: "", date: "", ownerUsername: ""});
-
-    return(
-      <Router>
-          <Route path="/welcome" exact={true} render={Welcome} />
-      </Router>
-    );
-  }
-
-  toggleState(event) {
-
-    event.preventDefault();
-    const value = event.currentTarget.value;
-    Meteor.call('tasks.updateState', this.state.id, value);
-  }
-
-  toggleEdition() {
-    this.setState({
-      edition: !this.state.edition,
-    });
-  }
-
-  updateSituation(){
-
-    const sita = this.state.stateT;
-    let sitp = "";
-
-    if(sita == "Cadastrada"){
-      sitp = "Em Andamento";
-    }
-    else if(sita == "Em Andamento"){
-      sitp = "Concluída";
-    }
-    else if(sita == "Concluída"){
-      sitp = "Cadastrada";
-    }
-
-    const cad = (sita !== "Cadastrada") && (sitp == "Cadastrada" || sitp == "Em Andamento" || sitp == "Concluída");
-    const ema = (sita !== "Em Andamento") && (sitp == "Em Andamento");
-    const con = (sita !== "Concluída") && (sitp == "Concluída");
-
-    return(
-
-      <ListItem key="stateUpdate" text="true">
-      <ButtonGroup variant="contained" color="primary" aria-label="contained primary button group">
-
-        <Button
-          value="Cadastrada"
-          variant="contained"
-          color="primary"
-          endIcon={<Icon>send</Icon>}
-          onClick={this.toggleState}
-          disabled={!cad}
-        > Cadastrada </Button>
-
-        <Button
-          value="Em Andamento"
-          variant="contained"
-          color="primary"
-          endIcon={<Icon>send</Icon>}
-          disabled={!ema}
-          onClick={this.toggleState}
-        > Em Andamento </Button>
-
-        <Button
-          value="Concluída"
-          variant="contained"
-          color="primary"
-          endIcon={<Icon>send</Icon>}
-          onClick={this.toggleState}
-          disabled={!con}
-        > Concluída </Button>
-
-      </ButtonGroup>
-      </ListItem>
-    );
-  }
-
-  renderTask(){
-
-    return(
-    <form>
-      <List dense className={''}>
-        <span className="text">
-          <ListItem key="name" text="true">
-
-            <TextField
-              id="outlined-helperText"
-              label="Nome"
-              value= {this.state.name}
-              variant="outlined"
-              disabled={!this.state.edition}
-              onChange={this.handleName.bind(this)}
-            />
-          </ListItem>
-
-          <ListItem key="description" text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Descrição"
-              value={this.state.description}
-              variant="outlined"
-              disabled={!this.state.edition}
-              onChange={this.handleDescription.bind(this)}
-            />
-          </ListItem>
-
-          <ListItem key="state" text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Situação"
-              value={this.state.stateT}
-              variant="outlined"
-              disabled={!this.state.edition}
-              onChange={this.handleStateT.bind(this)}
-              select={true}
-            >
-              <MenuItem value="Cadastrada">Cadastrada</MenuItem>
-              <MenuItem value="Em Andamento">Em Andamento</MenuItem>
-              <MenuItem value="Concluída">Concluída</MenuItem>
-            </TextField>
-          </ListItem>
-
-          { !this.state.edition ? this.updateSituation() : '' }
-
-          <ListItem key="data" text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Data"
-              type="date"
-              value={this.state.date}
-              variant="outlined"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={this.handleDate.bind(this)}
-              disabled={!this.state.edition}
-            />
-          </ListItem>
-
-          <ListItem key="ownerUsername" text="true">
-            <TextField
-              id="outlined-helperText"
-              label="Usuário: "
-              value={this.state.ownerUsername}
-              variant="outlined"
-              onChange={this.handleOwnerUsername.bind(this)}
-              disabled={true}
-            />
-          </ListItem>
-
-          <ListItem key="submit" text="true">
-            <Button
-              label="Submit"
-              primary="true"
-              variant="contained"
-              color="primary"
-              type='submit'
-              onClick={this.handleSubmit.bind(this)}
-              endIcon={<Icon>send</Icon>}
-              disabled={!this.state.edition}>
-              Submit </Button>
-
-          </ListItem>
-
-        </span>
-      </List>
-    </form>
-    );
   }
 
   render() {
     const { classes } = this.props;
-    console.log("entrou aqui 2");
 
     return (
       <div>
@@ -303,12 +129,107 @@ class UserProfile extends Component {
             <header>
                 <div>
                   <Typography variant="h3" gutterBottom>
-                      Todo List: Task Edit
+                      Todo List: User Edit
                   </Typography>
                 </div>
             </header>
 
-            {this.renderTask()}
+            <form>
+              <List dense className={''}>
+                <span className="text">
+                  <ListItem key="name" text="true">
+
+                    <TextField
+                      id="outlined-helperText"
+                      label="Nome"
+                      value= {this.state.name}
+                      variant="outlined"
+                      onChange={this.handleName.bind(this)}
+                    />
+                  </ListItem>
+
+                  <ListItem key="email" text="true">
+                    <TextField
+                      id="outlined-helperText"
+                      label="Email"
+                      value={this.state.email}
+                      variant="outlined"
+                      onChange={this.handleEmail.bind(this)}
+                    />
+                  </ListItem>
+
+                  <ListItem key="birthday" text="true">
+                    <TextField
+                      id="outlined-helperText"
+                      label="Data de Nascimento"
+                      type="date"
+                      value={this.state.birthday}
+                      variant="outlined"
+                      onChange={this.handleBirthday.bind(this)}
+                    />
+                  </ListItem>
+
+                  <ListItem key="gender" text="true">
+                    <TextField
+                      id="outlined-helperText"
+                      label="Gênero"
+                      value="feminino"
+                      variant="outlined"
+                      onChange={this.handleGender.bind(this)}
+                      select={true}
+                    >
+                      <MenuItem value="feminino">Feminino</MenuItem>
+                      <MenuItem value="masculino">Masculino</MenuItem>
+                    </TextField>
+                  </ListItem>
+
+                  <ListItem key="company" text="true">
+                    <TextField
+                      id="outlined-helperText"
+                      label="Empresa"
+                      value={this.state.company}
+                      variant="outlined"
+                      onChange={this.handleCompany.bind(this)}
+                    />
+                  </ListItem>
+
+                  <ListItem key="file" text="true">
+                  <TextField
+                    accept="image/*"
+                    className=""
+                    id="contained-button-file"
+                    multiple
+                    type="file"
+                  />
+                  <label htmlFor="contained-button-file">
+                    <Button variant="contained" color="primary" component="span">
+                      Upload
+                    </Button>
+                  </label>
+                  <input accept="image/*" className="" id="icon-button-file" type="file" />
+                  <label htmlFor="icon-button-file">
+                    <IconButton color="primary" aria-label="upload picture" component="span">
+                      <PhotoCamera />
+                    </IconButton>
+                  </label>
+                  </ListItem>
+
+                  <ListItem key="submit" text="true">
+                    <Button
+                      label="Submit"
+                      primary="true"
+                      variant="contained"
+                      color="primary"
+                      type='submit'
+                      onClick={this.handleSubmit.bind(this)}
+                      endIcon={<Icon>send</Icon>}>
+                      Submit </Button>
+                  </ListItem>
+
+
+                </span>
+              </List>
+            </form>
         </div>
       </div>
     );
@@ -316,11 +237,11 @@ class UserProfile extends Component {
 }
 export default withTracker(() => {
 
-  Meteor.subscribe('tasks', "");
+  Meteor.subscribe('users2', "");
 
   return {
-    tasks: Tasks.find({ modeedition: {$ne: false} }).fetch(),
-    incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
+    users: Users.find({}).fetch(),
+    incompleteCount: Users.find({ checked: { $ne: true } }).count(),
     currentUser: Meteor.user(),
   };
 })(UserProfile);

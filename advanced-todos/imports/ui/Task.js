@@ -30,7 +30,7 @@ import DashBoard from './DashBoard.js';
 import classnames from 'classnames';
 import { createBrowserHistory } from "history";
 
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 
 const styles = theme => ({
   root: {
@@ -64,9 +64,8 @@ class Task extends Component {
   }
 
   openThisTask = () => {
-    Meteor.call('tasks.setModeEdition', this.props.task._id, true);
-    const url = "/edittasks/" + this.props.task._id;
-    console.log(this.props.task._id);
+    const idTask = this.props.task._id;
+    const url = "/edittasks/:" + idTask;
     <Route path={url} component={EditTask} />
     this.props.history.push(url);
   }
@@ -80,8 +79,6 @@ class Task extends Component {
       checked: this.props.task.checked,
       private: this.props.task.private,
     });
-
-    const url = "/edittasks/:" + this.props.task._id;
 
     return (
       <div className={classes.root}>

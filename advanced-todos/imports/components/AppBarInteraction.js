@@ -1,6 +1,6 @@
 import React, { useState, Fragment } from 'react';
 import clsx from 'clsx';
-import { Router, Route, Link } from "react-router-dom";
+import { Router, Route, Link, withRouter } from "react-router-dom";
 import { createBrowserHistory } from "history";
 
 import { withStyles } from '@material-ui/core/styles';
@@ -20,9 +20,34 @@ import UserProfile from '../ui/UserProfile.js';
 import DashBoard from '../ui/DashBoard.js';
 import Grid from "./ImageGridList.js";
 import EditTask from '../ui/EditTask.js';
+import Login from './Login.js';
+import MenuListComposition from './MenuListComposition.js';
+import Register from './Register.js';
+
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
 
 const drawerWidth = 240;
 const history = createBrowserHistory();
+
+const requireAuth = (nextState, replace) => {
+  if (isLoggedOut()) {
+    replace({
+      pathname: '/login',
+    });
+  }
+};
+
+export const isLoggedIn = () => {
+  return Boolean(Meteor.userId());
+};
+export const isLoggedOut = () => {
+  return !Meteor.userId();
+};
 
 const styles = theme => ({
   root: {
@@ -95,20 +120,17 @@ const MyDrawer = withStyles(styles)(
         <ListItem button component={Link} to="/tasks" onClick={onItemClick('Tasks')}>
           <ListItemText>Tasks</ListItemText>
         </ListItem>
-        <ListItem button component={Link} to="/edittask" onClick={onItemClick('EditTasks')}>
-          <ListItemText>EditTask</ListItemText>
-        </ListItem>
         <ListItem>
-          <ListItemText>Login/Signout</ListItemText>
-          <AccountsUIWrapper />
+          <MenuListComposition />
         </ListItem>
       </List>
     </Drawer>
     <main className={classes.content}>
-        <Route exact path="/" component={DashBoard} />
-        <Route path="/tasks" component={App} />
-        <Route path="/userprofile" component={UserProfile} />
-        <Route path="/edittask" component={EditTask} />
+        <Route exact onEnter={requireAuth} path="/tasks" component={App} />
+        <Route exact onEnter={requireAuth} path="/userprofile" component={UserProfile} />
+        <Route exact onEnter={requireAuth} path="/login" component={AccountsUIWrapper} />
+        <Route exact onEnter={requireAuth} path="/edittasks/:idTask" component={EditTask} />
+        <Route onEnter={requireAuth} path="/" component={DashBoard} />
     </main>
     </Router>
   )
@@ -141,4 +163,4 @@ function AppBarInteraction({ classes, variant }) {
   );
 }
 
-export default withStyles(styles)(AppBarInteraction);
+export default withStyles(styles)((AppBarInteraction));

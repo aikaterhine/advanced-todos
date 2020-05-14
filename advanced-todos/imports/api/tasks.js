@@ -37,7 +37,6 @@ Meteor.methods({
       description: description,
       state: "Cadastrada",
       private: false,
-      modeedition: false,
       createdAt: new Date(), // current time
       owner: this.userId,           // _id of logged in user
       username: Meteor.users.findOne(this.userId).username,  // username of logged in user
@@ -86,10 +85,6 @@ Meteor.methods({
     check(stateT, String);
 
     const task = Tasks.findOne(taskId);
-
-    if (task.owner !== this.userId) {
-      throw new Meteor.Error('not-authorized');
-    }
 
     Tasks.update(taskId, { $set: { state: stateT } });
 
