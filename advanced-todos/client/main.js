@@ -6,6 +6,7 @@ import { render } from 'react-dom';
 import '../imports/startup/accounts-config.js';
 import ResponsiveDrawer from '../imports/components/ResponsiveDrawer.js';
 import AppBarInteraction from '../imports/components/AppBarInteraction.js';
+import CustomForms from '../imports/components/CustomForms.js';
 
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 

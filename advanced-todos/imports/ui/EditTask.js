@@ -131,11 +131,16 @@ class EditTask extends Component {
     );
   }
 
+  historyBack = () => {
+    this.props.history.goBack;
+  }
+
   toggleState(event) {
 
     event.preventDefault();
     const value = event.currentTarget.value;
     Meteor.call('tasks.updateState', this.state.id, value);
+    console.log(this.props.history);
   }
 
   toggleEdition() {
@@ -283,7 +288,6 @@ class EditTask extends Component {
               Submit </Button>
 
           </ListItem>
-
         </span>
       </List>
     </form>
@@ -291,7 +295,6 @@ class EditTask extends Component {
   }
 
   render() {
-    console.log(this.props.tasks);
     const { classes } = this.props;
     return (
       <div>
@@ -319,14 +322,17 @@ class EditTask extends Component {
 }
 export default withTracker((props) => {
 
-  /*const taskId = props.match && props.match.params && !!props.match.params._id
-  ? props.match.params.idTask : undefined;*/
+  const taskId = props.match && props.match.params && !!props.match.params.idTask
+  ? props.match.params.idTask : undefined;
 
-  Meteor.subscribe('tasks', "XADX65a7m8NgF4s6t");
+  const taskIdd = taskId.slice(1);
+
+  Meteor.subscribe('tasks', taskIdd);
 
   return {
-    tasks: Tasks.find({}).fetch(),
+    tasks: Tasks.find({ _id: taskIdd}).fetch(),
     incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
     currentUser: Meteor.user(),
+    history: props.history,
   };
 })(EditTask);
