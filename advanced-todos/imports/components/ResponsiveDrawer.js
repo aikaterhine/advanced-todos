@@ -17,7 +17,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 
-import AccountsUIWrapper from '../ui/AccountsUIWrapper.js';
+import AccountsUIWrapperLogin from '../ui/AccountsUIWrapperLogin.js';
 import App from '../ui/App.js';
 import DashBoard from '../ui/DashBoard.js';
 
@@ -71,7 +71,7 @@ function ResponsiveDrawer(props) {
       <div className={classes.toolbar} />
       <Divider />
       <List>
-        {[<AccountsUIWrapper />, 'User Profile', 'Tasks', ].map((text, index) => (
+        {[<AccountsUIWrapperLogin />, 'User Profile', 'Tasks', ].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
             <ListItemText primary={text} />

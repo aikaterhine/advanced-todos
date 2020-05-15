@@ -32,7 +32,7 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 
-import AccountsUIWrapper from './AccountsUIWrapper.js';
+import AccountsUIWrapperLogin from './AccountsUIWrapperLogin.js';
 import Welcome from './routes/Welcome.js';
 
 import EditIcon from '@material-ui/icons/Edit';
