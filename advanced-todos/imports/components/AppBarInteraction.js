@@ -14,13 +14,14 @@ import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
-import AccountsUIWrapper from '../ui/AccountsUIWrapper.js';
+import AccountsUIWrapperLogin from '../ui/AccountsUIWrapperLogin.js';
 import App from '../ui/App.js';
 import UserProfile from '../ui/UserProfile.js';
 import DashBoard from '../ui/DashBoard.js';
 import Grid from "./ImageGridList.js";
 import EditTask from '../ui/EditTask.js';
 import Login from './Login.js';
+import Logout from './Logout.js';
 import MenuListComposition from './MenuListComposition.js';
 import Register from './Register.js';
 
@@ -120,15 +121,18 @@ const MyDrawer = withStyles(styles)(
         <ListItem button component={Link} to="/tasks" onClick={onItemClick('Tasks')}>
           <ListItemText>Tasks</ListItemText>
         </ListItem>
+        <ListItem button component={Link} to="/loginregister" onClick={onItemClick('Register')}>
+          <ListItemText>Login/Register</ListItemText>
+        </ListItem>
         <ListItem>
-          <MenuListComposition />
+          {isLoggedIn() ? <Logout /> : <AccountsUIWrapperLogin />}
         </ListItem>
       </List>
     </Drawer>
     <main className={classes.content}>
         <Route exact onEnter={requireAuth} path="/tasks" component={App} />
         <Route exact onEnter={requireAuth} path="/userprofile" component={UserProfile} />
-        <Route exact onEnter={requireAuth} path="/login" component={AccountsUIWrapper} />
+        <Route exact onEnter={requireAuth} path="/loginregister" component={AccountsUIWrapperLogin} />
         <Route exact onEnter={requireAuth} path="/edittasks/:idTask" component={EditTask} />
         <Route onEnter={requireAuth} path="/" component={DashBoard} />
     </main>

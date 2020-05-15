@@ -22,3 +22,4 @@ react-meteor-data
 static-html
 accounts-ui
 accounts-password
+accounts-base

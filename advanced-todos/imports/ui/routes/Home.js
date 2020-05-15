@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
-//import AccountsUIWrapper from './AccountsUIWrapper.js';
+//import AccountsUIWrapperLogin from './AccountsUIWrapperLogin.js';
 
 export default class Home extends Component {
 

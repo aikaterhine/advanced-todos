@@ -9,6 +9,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { makeStyles } from '@material-ui/core/styles';
 
+import AccountsUIWrapperLogin from '../ui/AccountsUIWrapperLogin.js';
+import AccountsUIWrapperRegister from '../ui/AccountsUIWrapperRegister.js';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -19,7 +22,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const isLoggedOut = () => {
-  console.log(Meteor.user()._id);
   return !Meteor.userId();
 };
 
@@ -32,10 +34,10 @@ export default function MenuListComposition () {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef(null);
-  const name='';
+  const name='nao tem ningem';
 
 
-  //isLoggedIn ? name=Meteor.user()._id : name='nao tem ninguem';
+  //isLoggedIn ? name = Meteor.user().profile.name : name='nao tem ninguem';
 
   const handleLogout = (event) => {
     Meteor.logout();
@@ -90,7 +92,9 @@ export default function MenuListComposition () {
               <Paper>
                 <ClickAwayListener onClickAway={handleClose}>
                   <MenuList autoFocusItem={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    <MenuItem>
+                      {isLoggedIn() ? <Logout /> : <AccountsUIWrapperLogin />}
+                    </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
               </Paper>

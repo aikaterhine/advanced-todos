@@ -16,6 +16,43 @@ import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
+import Grid from '@material-ui/core/Grid';
+
+
+const styles = theme => ({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  input: {
+    fontSize: 16,
+    height: 36,
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#888888',
+    borderWidth: 1,
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#3B5998',
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: '500',
+    fontSize: 16,
+  },
+  error: {
+    fontColor: 'red',
+    marginBottom: 10,
+}
+});
+
 export default class Register extends Component {
 
   constructor(props) {
@@ -31,7 +68,7 @@ export default class Register extends Component {
      password: '',
    }
 
-   this.handleSubmit = this.handleSubmit.bind(this);
+   this.onCreateAccount = this.onCreateAccount.bind(this);
    this.handleNome = this.handleNome.bind(this);
    this.handleDatadeNascimento = this.handleDatadeNascimento.bind(this);
    this.handleGenero = this.handleGenero.bind(this);
@@ -41,6 +78,49 @@ export default class Register extends Component {
    this.handleEmail = this.handleEmail.bind(this);
    this.handlePassword = this.handlePassword.bind(this);
 
+  }
+
+  onCreateAccount(event) {
+
+    event.preventDefault();
+
+    if (this.isValid()) {
+      Account.createUser({ email: this.state.email,
+      password: this.state.password,
+      profile:{
+        nome: this.state.nome,
+        datadenascimento: this.state.datadenascimento,
+        genero: this.state.genero,
+        empresa: this.state.empresa,
+        photo: this.state.photo,
+      }}, (error) => {
+        if(error) {
+          this.setState({ error: error.reason });
+        } else {
+          this.onSignIn(); // temp hack that you might need to use
+        }
+      });
+    }
+  }
+
+  isValid() {
+    let valid = false;
+
+    if (this.state.email.length > 0 && this.state.password.length > 0 && this.state.nome.length > 0 && this.state.empresa.length > 0) {
+      valid = true;
+    }
+
+    if (this.state.email.length === 0) {
+      this.setState({ error: 'You must enter an email address' });
+    } else if (this.state.password.length === 0) {
+      this.setState({ error: 'You must enter a password' });
+    } else if (this.state.nome.length === 0) {
+      this.setState({ error: 'You must enter a name' });
+    } else if (this.state.empresa.length === 0) {
+      this.setState({ error: 'You must enter a company' });
+    }
+
+    return valid;
   }
 
   handleNome(event) {
@@ -85,54 +165,47 @@ export default class Register extends Component {
      });
   }
 
-handleSubmit(event) {
-  event.preventDefault();
-
-  const res = Accounts.createUser({
-  nome: this.state.nome,
-  datadenascimento: this.state.datadenascimento,
-  genero: this.state.genero,
-  empresa: this.state.empresa,
-  photo: this.state.photo,
-  email: this.state.email,
-  password: this.state.password});
-}
-
   render() {
     return (
 
-      <form onSubmit={this.handleSubmit}>
+    <Grid container style={styles.container}>
+      <form onSubmit={this.onCreateAccount}>
         <List dense className={''}>
           <span className="text">
             <ListItem key="nome" text="true">
-
               <TextField
-                id="outlined-helperText"
-                label="Nome"
-                value= {this.state.nome}
-                variant="outlined"
+                type='text'
+                style={styles.input}
                 onChange={this.handleNome}
+                placeholder="Nome"
+                autoCapitalize="none"
+                autoCorrect="false"
+                keyboardtype="name"
               />
             </ListItem>
 
             <ListItem key="datadenascimento" text="true">
               <TextField
-                id="outlined-helperText"
-                label="Data de Nascimento"
-                type="date"
-                value={this.state.datadenascimento}
-                variant="outlined"
+                type='date'
+                style={styles.input}
                 onChange={this.handleDatadeNascimento.bind(this)}
+                placeholder="Data de Nascimento"
+                autoCapitalize="none"
+                autoCorrect="false"
+                keyboardtype="date"
               />
             </ListItem>
 
             <ListItem key="genero" text="true">
               <TextField
-                id="outlined-helperText"
-                label="Gênero"
-                value="feminino"
-                variant="outlined"
+                type='select'
+                style={styles.input}
                 onChange={this.handleGenero.bind(this)}
+                placeholder="Gênero"
+                value="feminino"
+                autoCapitalize="none"
+                autoCorrect="false"
+                keyboardtype="date"
                 select={true}
               >
                 <MenuItem value="feminino">Feminino</MenuItem>
@@ -142,71 +215,79 @@ handleSubmit(event) {
 
             <ListItem key="empresa" text="true">
               <TextField
-                id="outlined-helperText"
-                label="Empresa"
-                value={this.state.empresa}
-                variant="outlined"
+                type='email'
+                style={styles.input}
                 onChange={this.handleEmpresa}
+                placeholder="Empresa"
+                autoCapitalize="none"
+                autoCorrect="false"
+                keyboardtype="email-address"
               />
             </ListItem>
 
             <ListItem key="file" text="true">
-              <TextField
-                accept="image/*"
-                className=""
-                id="contained-button-file"
-                multiple
+            <TextField
+              type='text'
+              style={styles.input}
+              placeholder="Foto"
+              disabled={true}
+              autoCapitalize="none"
+              autoCorrect="false"
+            />
+            <Button
+              variant="contained"
+              component="label"
+            >
+              Upload
+              <input
                 type="file"
+                style={{ display: "none" }}
               />
-              <label htmlFor="contained-button-file">
-                <Button variant="contained" color="primary" component="span">
-                  Upload
-                </Button>
-              </label>
-              <input accept="image/*" className="" id="icon-button-file" type="file" />
-              <label htmlFor="icon-button-file">
-                <IconButton color="primary" aria-label="upload picture" component="span">
-                  <PhotoCamera />
-                </IconButton>
-              </label>
+            </Button>
             </ListItem>
 
             <ListItem key="email" text="true">
-              <TextField
-                id="outlined-helperText"
-                label="Email"
-                value={this.state.email}
-                variant="outlined"
-                onChange={this.handleEmail}
-              />
+            <TextField
+              type='email'
+              style={styles.input}
+              onChange={this.handleEmail}
+              placeholder="Email"
+              autoCapitalize="none"
+              autoCorrect="false"
+              keyboardtype="email-address"
+            />
             </ListItem>
 
             <ListItem key="password" text="true">
-              <TextField
-                id="outlined-helperText"
-                label="Senha"
-                value={this.state.password}
-                variant="outlined"
-                onChange={this.handlePassword}
+            <TextField
+              type='password'
+              style={styles.input}
+              onChange={this.handlePassword}
+              placeholder="Password"
+              autoCapitalize="none"
+              autoCorrect="false"
+              securetextentry="true"
               />
             </ListItem>
 
+            <Typography style={styles.error}> { this.state.error } </Typography>
+
             <ListItem>
               <Button
-                label="Submit"
+                style={styles.button}
+                label="Create Account"
                 primary="true"
                 variant="contained"
-                color="primary"
                 type='submit'
-                onClick={this.handleSubmit.bind(this)}
+                onClick={this.onCreateAccount.bind(this)}
                 endIcon={<Icon>send</Icon>}>
-                Submit
+                <Typography style={styles.buttonText}> Register </Typography>
               </Button>
             </ListItem>
-
           </span>
         </List>
       </form>
+    </Grid>
     );
   }
 }
