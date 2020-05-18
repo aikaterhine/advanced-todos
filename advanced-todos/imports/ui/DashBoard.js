@@ -16,7 +16,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import App from './App.js';
 import EditTask from './EditTask.js';
 
-import Welcome from './routes/Welcome.js';
+import Welcome from './Welcome.js';
 
 import { Tasks } from '../api/tasks.js';
 
@@ -49,15 +49,9 @@ class DashBoard extends Component {
 
   constructor(props) {
     super(props);
-
-    this.openTasks = this.openTasks.bind(this);
   };
 
-  openTasks(){
-    console.log("entrou aqui");
-  }
-
-  onSubmit = () => {
+  openTasks = () => {
     <Route path="/tasks" component={App} />
     this.props.history.push('/tasks');
   }
@@ -113,7 +107,7 @@ class DashBoard extends Component {
                     { this.props.incompleteCount }
                     </Typography>
                     <CardActions>
-                      <Button component={Link} to="/tasks" size="small" onClick={this.onSubmit}>Acessar</Button>
+                      <Button component={Link} to="/tasks" size="small" onClick={this.openTasks}>Acessar</Button>
                     </CardActions>
                   </CardContent>
                 </Card>

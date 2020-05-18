@@ -16,6 +16,8 @@ import TextField from '@material-ui/core/TextField';
 
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
+import Register from './Register.js';
+import AccountsUIWrapperRegister from '../ui/AccountsUIWrapperRegister.js';
 
 const styles = theme => ({
   container: {
@@ -94,13 +96,15 @@ class Login extends Component {
           this.setState({ error: error.reason });
         }
       });
+      this.setState({email: "", password: ""});
     }
   }
 
   onCreateAccount(event) {
 
     event.preventDefault();
-    //abirir o register
+    return <AccountsUIWrapperRegister />;
+    //abirir o registere
   }
 
   handleEmail(event) {

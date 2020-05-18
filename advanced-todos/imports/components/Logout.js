@@ -41,21 +41,24 @@ class Logout extends Component {
 
   render() {
 
-    console.log(Meteor.user());
+    const nome = Meteor.user().profile.nome;
 
     return (
 
       <Grid container style={styles.container}>
-            <Button
-              style={styles.button}
-              label="Log Out"
-              primary="true"
-              variant="contained"
-              type='submit'
-              onClick={() => Meteor.logout()}
-              endIcon={<Icon>send</Icon>}>
-              <Typography style={styles.buttonText}> Log Out </Typography>
-            </Button>
+        <Typography variant="button" gutterBottom>
+        Logado como {nome}
+        </Typography>
+        <Button
+          style={styles.button}
+          label="Log Out"
+          primary="true"
+          variant="contained"
+          type='submit'
+          onClick={() => Meteor.logout()}
+          endIcon={<Icon>send</Icon>}>
+          <Typography style={styles.buttonText}> Log Out </Typography>
+        </Button>
       </Grid>
     );
   }
