@@ -18,6 +18,7 @@ import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
 import Grid from '@material-ui/core/Grid';
 
+import { Users } from '../api/users.js';
 
 const styles = theme => ({
   container: {
@@ -80,26 +81,25 @@ export default class Register extends Component {
 
   }
 
+  onSignIn() {
+    console.log("funcionou");
+  }
+
   onCreateAccount(event) {
 
     event.preventDefault();
 
     if (this.isValid()) {
-      Account.createUser({ email: this.state.email,
-      password: this.state.password,
-      profile:{
-        nome: this.state.nome,
-        datadenascimento: this.state.datadenascimento,
-        genero: this.state.genero,
-        empresa: this.state.empresa,
-        photo: this.state.photo,
-      }}, (error) => {
+
+      Meteor.call('Users.insert', this.state.nome,  this.state.email, this.state.password, this.state.datadenascimento, this.state.genero, this.state.empresa, this.state.photo,
+       (error) => {
         if(error) {
           this.setState({ error: error.reason });
         } else {
           this.onSignIn(); // temp hack that you might need to use
         }
       });
+      this.setState({nome: "", email: "", password: "", datadenascimento: "", genero: "", empresa: "", photo: ""});
     }
   }
 

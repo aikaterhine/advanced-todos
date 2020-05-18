@@ -33,7 +33,7 @@ import {
 } from '@material-ui/pickers';
 
 import AccountsUIWrapperLogin from './AccountsUIWrapperLogin.js';
-import Welcome from './routes/Welcome.js';
+import Welcome from './Welcome.js';
 
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
@@ -52,34 +52,26 @@ const styles = theme => ({
   }
 });
 
+redirectToHome = () => {
+ const { history } = this.props;
+ if(history) history.push('/');
+}
+
 // User component - represents a single todo item
 class UserProfile extends Component {
 
   constructor(props) {
     super(props);
 
-    let id, name, email, gender, birthday, company, photo;
-
-    let filteredUsers = this.props.users;
-
-    filteredUsers.map((user) => {
-      id = user.name;
-      name = user.name;
-      email = user.email;
-      gender = user.name;
-      birthday = user.name;
-      company = user.name;
-      photo = user.name;
-    });
-
     this.state = {
       edition: false,
-      id: id,
-      name: name,
-      email: email,
-      gender: gender,
-      birthday: birthday,
-      company: birthday,
+      id: this.props.currentUser._id,
+      email: this.props.currentUser.emails[0].address,
+      name: this.props.currentUser.profile.nome,
+      gender: this.props.currentUser.profile.genero,
+      birthday: this.props.currentUser.profile.datadenascimento,
+      company: this.props.currentUser.profile.empresa,
+      photo: this.props.currentUser.profile.photo,
     };
 
   }
@@ -87,6 +79,10 @@ class UserProfile extends Component {
   handleSubmit(event){
 
     event.preventDefault();
+
+    Meteor.call('Users.update', this.state.id, this.state.name, this.state.email, this.state.birthday, this.state.gender, this.state.company, this.state.photo);
+    this.setState({name: "", email: "", gender: "", birthday: "", company: "", photo: ""});
+
   }
 
 
@@ -125,6 +121,7 @@ class UserProfile extends Component {
 
     return (
       <div>
+      { this.props.currentUser ?
           <div className="container">
             <header>
                 <div>
@@ -225,23 +222,22 @@ class UserProfile extends Component {
                       endIcon={<Icon>send</Icon>}>
                       Submit </Button>
                   </ListItem>
-
-
                 </span>
               </List>
             </form>
-        </div>
+        </div> : <div> <Welcome /> </div>
+      }
       </div>
     );
   }
 }
 export default withTracker(() => {
 
-  Meteor.subscribe('users2', "");
+  Meteor.subscribe('Users', "");
 
   return {
     users: Users.find({}).fetch(),
     incompleteCount: Users.find({ checked: { $ne: true } }).count(),
     currentUser: Meteor.user(),
   };
-})(UserProfile);
+})(withRouter(UserProfile));

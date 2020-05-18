@@ -19,7 +19,7 @@ import Typography from '@material-ui/core/Typography';
 
 import AddChoreForm from '../components/AddChoreForm.js'
 import ResponsiveDrawer from '../components/ResponsiveDrawer.js'
-import Welcome from './routes/Welcome.js';
+import Welcome from './Welcome.js';
 
 // App component - represents the whole app
 class App extends Component {

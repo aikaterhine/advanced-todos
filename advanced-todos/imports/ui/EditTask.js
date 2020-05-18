@@ -33,7 +33,7 @@ import {
 } from '@material-ui/pickers';
 
 import AccountsUIWrapperLogin from './AccountsUIWrapperLogin.js';
-import Welcome from './routes/Welcome.js';
+import Welcome from './Welcome.js';
 
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';

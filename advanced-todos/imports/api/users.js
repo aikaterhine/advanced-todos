@@ -2,12 +2,12 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Meteor } from 'meteor/meteor';
 
-export const Users = new Mongo.Collection('users2');
+export const Users = Meteor.users;
 
 if (Meteor.isServer) {
   // This code only runs on the server
-  // Only publish users that are public or belong to the current user
-  Meteor.publish('users2', function usersPublication(iduser) {
+  // Only publish Users that are public or belong to the current user
+  Meteor.publish('Users', function UsersPublication(iduser) {
     if(iduser===""){
       return Users.find({
         $or: [
@@ -23,38 +23,61 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'users.insert'(name, email, birthday, gender, company, photo) {
+  'Users.insert'(name, email, password, birthday, gender, company, photo) {
+    check(name, String);
+    check(email, String);
+    check(password, String);
+    check(birthday, String);
+    check(gender, String);
+    check(company, String);
+    check(photo, String);
+
+    const userExists = Users.findUserByEmail(email);
+
+    if(userExists){
+      throw new Meteor.Error('user-exists');
+    }
+
+    const userId = Accounts.createUser({ email: email,
+      password: password,
+      profile:{
+      nome: name,
+      datadenascimento: birthday,
+      genero: gender,
+      empresa: company,
+      photo: photo,
+    }});
+  },
+  'Users.update'(userId, name, email, birthday, gender, company, photo) {
+
     check(name, String);
     check(email, String);
     check(birthday, String);
     check(gender, String);
     check(company, String);
-
-    Users.insert({
-      name: name,
-      email: email,
-      birthday: birthday,
-      gender: gender,
-      company: company,
-      photo: this.userId,
-    });
-  },
-  'users.update'(userId, name, email, stateT, date) {
-
-    check(userId, String);
-    check(name, String);
-    check(email, String);
-    check(stateT, String);
-    check(date, String);
+    check(photo, String);
 
     const user = Users.findOne(userId);
+    const userExists = Users.findUserByEmail(email);
 
-    if (user.owner !== this.userId) {
-      throw new Meteor.Error('not-authorized');
+    if (Boolean(Meteor.userId()) === false) {
+      throw new Meteor.Error('not-logged');
+    }
+    if(userExists){
+      throw new Meteor.Error('user-exists');
     }
 
-    Users.update(userId, { $set: { name: name, email: email, state: stateT, createdAt: date} });
-
+    Users.update(userId, { $set:
+      { email: email,
+      password: password,
+      profile: {
+      nome: name,
+      datadenascimento: birthday,
+      genero: gender,
+      empresa: company,
+      photo: photo,
+    }}
+  });
   },
 
 });

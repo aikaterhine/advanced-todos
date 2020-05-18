@@ -15,8 +15,12 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 
 import AccountsUIWrapperLogin from '../ui/AccountsUIWrapperLogin.js';
+import AccountsUIWrapperLogout from '../ui/AccountsUIWrapperLogout.js';
+
 import App from '../ui/App.js';
 import UserProfile from '../ui/UserProfile.js';
+import Welcome from '../ui/Welcome.js';
+
 import DashBoard from '../ui/DashBoard.js';
 import Grid from "./ImageGridList.js";
 import EditTask from '../ui/EditTask.js';
@@ -38,7 +42,7 @@ const history = createBrowserHistory();
 const requireAuth = (nextState, replace) => {
   if (isLoggedOut()) {
     replace({
-      pathname: '/login',
+      pathname: '/welcome',
     });
   }
 };
@@ -121,18 +125,17 @@ const MyDrawer = withStyles(styles)(
         <ListItem button component={Link} to="/tasks" onClick={onItemClick('Tasks')}>
           <ListItemText>Tasks</ListItemText>
         </ListItem>
-        <ListItem button component={Link} to="/loginregister" onClick={onItemClick('Register')}>
-          <ListItemText>Login/Register</ListItemText>
+        <ListItem>
         </ListItem>
         <ListItem>
-          {isLoggedIn() ? <Logout /> : <AccountsUIWrapperLogin />}
+        {isLoggedIn() ? <AccountsUIWrapperLogout /> : <AccountsUIWrapperLogin />}
         </ListItem>
       </List>
     </Drawer>
     <main className={classes.content}>
         <Route exact onEnter={requireAuth} path="/tasks" component={App} />
         <Route exact onEnter={requireAuth} path="/userprofile" component={UserProfile} />
-        <Route exact onEnter={requireAuth} path="/loginregister" component={AccountsUIWrapperLogin} />
+        <Route exact onEnter={requireAuth} path="/welcome" component={Welcome} />
         <Route exact onEnter={requireAuth} path="/edittasks/:idTask" component={EditTask} />
         <Route onEnter={requireAuth} path="/" component={DashBoard} />
     </main>
