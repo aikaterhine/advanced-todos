@@ -26,6 +26,7 @@ export default class AccountsUIWrapperRegister extends Component {
   componentDidMount() {
     // Use Meteor Blaze to render login buttons
     //
+
     this.view = ReactDOM.render(<Register />,
       ReactDOM.findDOMNode(this.refs.container));
 

@@ -30,11 +30,9 @@ Meteor.methods({
     check(birthday, String);
     check(gender, String);
     check(company, String);
-    check(photo, String);
+    check(photo[0].base64, String);
 
-    const userExists = Users.findUserByEmail(email);
-
-    if(userExists){
+    if(Meteor.isServer && Accounts.findUserByEmail(email)){
       throw new Meteor.Error('user-exists');
     }
 
@@ -45,25 +43,25 @@ Meteor.methods({
       datadenascimento: birthday,
       genero: gender,
       empresa: company,
-      photo: photo,
+      photo: photo[0].base64,
     }});
   },
-  'Users.update'(userId, name, email, birthday, gender, company, photo) {
+  'Users.update'(userId, name, emailOriginal, email, password, birthday, gender, company, photo) {
 
     check(name, String);
+    check(emailOriginal, String);
     check(email, String);
     check(birthday, String);
     check(gender, String);
     check(company, String);
-    check(photo, String);
+    check(photo[0].base64, String);
 
     const user = Users.findOne(userId);
-    const userExists = Users.findUserByEmail(email);
 
     if (Boolean(Meteor.userId()) === false) {
       throw new Meteor.Error('not-logged');
     }
-    if(userExists){
+    if((emailOriginal !== email) && Meteor.isServer && Meteor.findUserByEmail(email)){
       throw new Meteor.Error('user-exists');
     }
 
@@ -75,7 +73,7 @@ Meteor.methods({
       datadenascimento: birthday,
       genero: gender,
       empresa: company,
-      photo: photo,
+      photo: photo[0].base64,
     }}
   });
   },

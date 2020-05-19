@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Accounts } from 'meteor/accounts-base';
 
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -16,9 +18,13 @@ import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
+import { Router, Switch, Route, Link, withRouter } from 'react-router-dom'
+
 import Grid from '@material-ui/core/Grid';
 
 import { Users } from '../api/users.js';
+
+import FileBase64 from 'react-file-base64';
 
 const styles = theme => ({
   container: {
@@ -54,7 +60,7 @@ const styles = theme => ({
 }
 });
 
-export default class Register extends Component {
+class Register extends Component {
 
   constructor(props) {
    super(props);
@@ -65,7 +71,7 @@ export default class Register extends Component {
      datadenascimento: '',
      genero: '',
      empresa: '',
-     photo: '',
+     photo: [],
      password: '',
    }
 
@@ -74,33 +80,10 @@ export default class Register extends Component {
    this.handleDatadeNascimento = this.handleDatadeNascimento.bind(this);
    this.handleGenero = this.handleGenero.bind(this);
    this.handleEmpresa = this.handleEmpresa.bind(this);
-   this.handlePhoto = this.handlePhoto.bind(this);
 
    this.handleEmail = this.handleEmail.bind(this);
    this.handlePassword = this.handlePassword.bind(this);
 
-  }
-
-  onSignIn() {
-    console.log("funcionou");
-  }
-
-  onCreateAccount(event) {
-
-    event.preventDefault();
-
-    if (this.isValid()) {
-
-      Meteor.call('Users.insert', this.state.nome,  this.state.email, this.state.password, this.state.datadenascimento, this.state.genero, this.state.empresa, this.state.photo,
-       (error) => {
-        if(error) {
-          this.setState({ error: error.reason });
-        } else {
-          this.onSignIn(); // temp hack that you might need to use
-        }
-      });
-      this.setState({nome: "", email: "", password: "", datadenascimento: "", genero: "", empresa: "", photo: ""});
-    }
   }
 
   isValid() {
@@ -121,6 +104,22 @@ export default class Register extends Component {
     }
 
     return valid;
+  }
+
+  onCreateAccount(event) {
+
+    event.preventDefault();
+
+    if (this.isValid()) {
+
+      Meteor.call('Users.insert', this.state.nome,  this.state.email, this.state.password, this.state.datadenascimento, this.state.genero, this.state.empresa, this.state.photo,
+       (error) => {
+        if(error) {
+          this.setState({ error: error.reason });
+        }
+      });
+      this.setState({nome: "", email: "", password: "", datadenascimento: "", genero: "", empresa: "", photo: ""});
+    }
   }
 
   handleNome(event) {
@@ -147,9 +146,9 @@ export default class Register extends Component {
      });
   }
 
-  handlePhoto(event) {
+  handlePhoto(files) {
    this.setState({
-       photo: event.currentTarget.value
+       photo: files
      });
   }
 
@@ -168,126 +167,135 @@ export default class Register extends Component {
   render() {
     return (
 
-    <Grid container style={styles.container}>
-      <form onSubmit={this.onCreateAccount}>
-        <List dense className={''}>
-          <span className="text">
-            <ListItem key="nome" text="true">
-              <TextField
-                type='text'
-                style={styles.input}
-                onChange={this.handleNome}
-                placeholder="Nome"
-                autoCapitalize="none"
-                autoCorrect="false"
-                keyboardtype="name"
-              />
-            </ListItem>
+      <div className="container">
+        <header>
+          <div>
+              <Typography variant="h4" gutterBottom>
+                Seja Bem-Vindo!
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Você precisa criar uma conta para acessar as tarefas.
+              </Typography>
+          </div>
+        </header>
 
-            <ListItem key="datadenascimento" text="true">
-              <TextField
-                type='date'
-                style={styles.input}
-                onChange={this.handleDatadeNascimento.bind(this)}
-                placeholder="Data de Nascimento"
-                autoCapitalize="none"
-                autoCorrect="false"
-                keyboardtype="date"
-              />
-            </ListItem>
+        <div>
+        <Grid container style={styles.container}>
+          <form onSubmit={this.onCreateAccount}>
+            <List dense className={''}>
+              <span className="text">
+                <ListItem key="nome" text="true">
+                  <TextField
+                    type='text'
+                    onChange={this.handleNome}
+                    label="Nome"
+                    autoCapitalize="none"
+                    autoCorrect="false"
+                    keyboardtype="name"
+                  />
+                </ListItem>
 
-            <ListItem key="genero" text="true">
-              <TextField
-                type='select'
-                style={styles.input}
-                onChange={this.handleGenero.bind(this)}
-                placeholder="Gênero"
-                value="feminino"
-                autoCapitalize="none"
-                autoCorrect="false"
-                keyboardtype="date"
-                select={true}
-              >
-                <MenuItem value="feminino">Feminino</MenuItem>
-                <MenuItem value="masculino">Masculino</MenuItem>
-              </TextField>
-            </ListItem>
+                <ListItem key="datadenascimento" text="true">
+                  <TextField
+                    type='date'
+                    style={styles.input}
+                    onChange={this.handleDatadeNascimento.bind(this)}
+                    placeholder="Data de Nascimento"
+                    autoCapitalize="none"
+                    autoCorrect="false"
+                    keyboardtype="date"
+                  />
+                </ListItem>
 
-            <ListItem key="empresa" text="true">
-              <TextField
-                type='email'
-                style={styles.input}
-                onChange={this.handleEmpresa}
-                placeholder="Empresa"
-                autoCapitalize="none"
-                autoCorrect="false"
-                keyboardtype="email-address"
-              />
-            </ListItem>
+                <ListItem key="genero" text="true">
+                  <TextField
+                    type='select'
+                    style={styles.input}
+                    onChange={this.handleGenero.bind(this)}
+                    placeholder="Gênero"
+                    value="feminino"
+                    autoCapitalize="none"
+                    autoCorrect="false"
+                    keyboardtype="date"
+                    select={true}
+                  >
+                    <MenuItem value="feminino">Feminino</MenuItem>
+                    <MenuItem value="masculino">Masculino</MenuItem>
+                  </TextField>
+                </ListItem>
 
-            <ListItem key="file" text="true">
-            <TextField
-              type='text'
-              style={styles.input}
-              placeholder="Foto"
-              disabled={true}
-              autoCapitalize="none"
-              autoCorrect="false"
-            />
-            <Button
-              variant="contained"
-              component="label"
-            >
-              Upload
-              <input
-                type="file"
-                style={{ display: "none" }}
-              />
-            </Button>
-            </ListItem>
+                <ListItem key="empresa" text="true">
+                  <TextField
+                    type='email'
+                    style={styles.input}
+                    onChange={this.handleEmpresa}
+                    placeholder="Empresa"
+                    autoCapitalize="none"
+                    autoCorrect="false"
+                    keyboardtype="email-address"
+                  />
+                </ListItem>
 
-            <ListItem key="email" text="true">
-            <TextField
-              type='email'
-              style={styles.input}
-              onChange={this.handleEmail}
-              placeholder="Email"
-              autoCapitalize="none"
-              autoCorrect="false"
-              keyboardtype="email-address"
-            />
-            </ListItem>
+                <ListItem key="file" text="true">
+                <TextField
+                  type='text'
+                  style={styles.input}
+                  placeholder="Foto"
+                  disabled={true}
+                  autoCapitalize="none"
+                  autoCorrect="false"
+                />
+                  <FileBase64
+                    multiple={ true }
+                    onDone={ this.handlePhoto.bind(this)} />
+                </ListItem>
 
-            <ListItem key="password" text="true">
-            <TextField
-              type='password'
-              style={styles.input}
-              onChange={this.handlePassword}
-              placeholder="Password"
-              autoCapitalize="none"
-              autoCorrect="false"
-              securetextentry="true"
-              />
-            </ListItem>
+                <ListItem key="email" text="true">
+                <TextField
+                  type='email'
+                  style={styles.input}
+                  onChange={this.handleEmail}
+                  placeholder="Email"
+                  autoCapitalize="none"
+                  autoCorrect="false"
+                  keyboardtype="email-address"
+                />
+                </ListItem>
 
-            <Typography style={styles.error}> { this.state.error } </Typography>
+                <ListItem key="password" text="true">
+                <TextField
+                  type='password'
+                  style={styles.input}
+                  onChange={this.handlePassword}
+                  placeholder="Password"
+                  autoCapitalize="none"
+                  autoCorrect="false"
+                  securetextentry="true"
+                  />
+                </ListItem>
 
-            <ListItem>
-              <Button
-                style={styles.button}
-                label="Create Account"
-                primary="true"
-                variant="contained"
-                type='submit'
-                onClick={this.onCreateAccount.bind(this)}
-                endIcon={<Icon>send</Icon>}>
-                <Typography style={styles.buttonText}> Register </Typography>
-              </Button>
-            </ListItem>
-          </span>
-        </List>
-      </form>
-    </Grid>
+                <Typography style={styles.error}> { this.state.error } </Typography>
+
+                <ListItem>
+                  <Button
+                    style={styles.button}
+                    label="Create Account"
+                    primary="true"
+                    variant="contained"
+                    type='submit'
+                    onClick={this.onCreateAccount.bind(this)}
+                    endIcon={<Icon>send</Icon>}>
+                    <Typography style={styles.buttonText}> Register </Typography>
+                  </Button>
+                </ListItem>
+              </span>
+            </List>
+          </form>
+        </Grid>
+      </div>
+    </div>
     );
   }
 }
+
+export default withStyles(styles)((Register));

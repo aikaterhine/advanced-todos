@@ -19,6 +19,12 @@ import Grid from '@material-ui/core/Grid';
 import Register from './Register.js';
 import AccountsUIWrapperRegister from '../ui/AccountsUIWrapperRegister.js';
 
+import { Router, Switch, Route, Link, withRouter } from 'react-router-dom'
+
+import { createBrowserHistory } from "history";
+
+export const history = createBrowserHistory();
+
 const styles = theme => ({
   container: {
     flex: 1,
@@ -67,20 +73,25 @@ class Login extends Component {
 
    this.handleEmail = this.handleEmail.bind(this);
    this.handlePassword = this.handlePassword.bind(this);
+   this.openThisTask = this.openThisTask.bind(this);
+  }
 
+  openThisTask = () => {
+    <Route path={"/register"} component={Register} />
+    this.props.history.push("/register");
+    console.log("parou aqui");
   }
 
   isValid() {
-    const { email, password } = this.state;
     let valid = false;
 
-    if (email.length > 0 && password.length > 0) {
+    if (this.state.email.length > 0 && this.state.password.length > 0) {
       valid = true;
     }
 
-    if (email.length === 0) {
+    if (this.state.email.length === 0) {
       this.setState({ error: 'You must enter an email address' });
-    } else if (password.length === 0) {
+    } else if (this.state.password.length === 0) {
       this.setState({ error: 'You must enter a password' });
     }
 
@@ -88,23 +99,17 @@ class Login extends Component {
   }
 
   onSignIn() {
-    const { email, password } = this.state;
 
     if (this.isValid()) {
-      Meteor.loginWithPassword(email, password, (error) => {
+      Meteor.loginWithPassword(this.state.email, this.state.password, (error) => {
         if (error) {
           this.setState({ error: error.reason });
         }
+        else{
+          this.setState({email: "", password: ""});
+        }
       });
-      this.setState({email: "", password: ""});
     }
-  }
-
-  onCreateAccount(event) {
-
-    event.preventDefault();
-    return <AccountsUIWrapperRegister />;
-    //abirir o registere
   }
 
   handleEmail(event) {
@@ -119,65 +124,61 @@ class Login extends Component {
      });
   }
 
-  handleSubmit(event) {
-
-    event.preventDefault();
-
-
-}
-
   render() {
     return (
+      <div className="container">
+        <header>
+          <div>
+              <Typography variant="h4" gutterBottom>
+                Seja Bem-Vindo!
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Você precisa logar para acessar as tarefas.
+              </Typography>
+          </div>
+        </header>
 
-      <Grid container style={styles.container}>
+        <div>
+          <Grid container style={styles.container}>
 
-        <form onSubmit={this.handleSubmit}>
+            <form>
 
-            <TextField
-              type='email'
-              style={styles.input}
-              onChange={this.handleEmail}
-              placeholder="Email"
-              autoCapitalize="none"
-              autoCorrect="false"
-              keyboardtype="email-address"
-            />
+                <TextField
+                  type='email'
+                  style={styles.input}
+                  onChange={this.handleEmail}
+                  placeholder="Email"
+                  autoCapitalize="none"
+                  autoCorrect="false"
+                  keyboardtype="email-address"
+                />
 
-            <TextField
-              type='password'
-              style={styles.input}
-              onChange={this.handlePassword}
-              placeholder="Password"
-              autoCapitalize="none"
-              autoCorrect="false"
-              securetextentry="true"
-              />
+                <TextField
+                  type='password'
+                  style={styles.input}
+                  onChange={this.handlePassword}
+                  placeholder="Password"
+                  autoCapitalize="none"
+                  autoCorrect="false"
+                  securetextentry="true"
+                  />
 
-              <Typography style={styles.error}> { this.state.error } </Typography>
+                  <Typography style={styles.error}> { this.state.error } </Typography>
 
-              <Button
-                style={styles.button}
-                label="Sign In"
-                primary="true"
-                variant="contained"
-                type='submit'
-                onClick={this.onSignIn.bind(this)}
-                endIcon={<Icon>send</Icon>}>
-                <Typography style={styles.buttonText}> Sign In </Typography>
-              </Button>
-
-                <Button
-                  style={styles.button}
-                  label="Create Account"
-                  primary="true"
-                  variant="contained"
-                  type='submit'
-                  onClick={this.onCreateAccount.bind(this)}
-                  endIcon={<Icon>send</Icon>}>
-                  <Typography style={styles.buttonText}> Create Account </Typography>
-                </Button>
-            </form>
-      </Grid>
+                  <Button
+                    style={styles.button}
+                    label="Sign In"
+                    primary="true"
+                    variant="contained"
+                    type='submit'
+                    onClick={this.onSignIn.bind(this)}
+                    endIcon={<Icon>send</Icon>}>
+                    <Typography style={styles.buttonText}> Sign In </Typography>
+                  </Button>
+                </form>
+          </Grid>
+      </div>
+    </div>
     );
   }
 }
