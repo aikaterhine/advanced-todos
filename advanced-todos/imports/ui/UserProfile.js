@@ -42,6 +42,8 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { BrowserRouter as Router, Switch, Route, Link, withRouter } from 'react-router-dom'
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
+import FileBase64 from 'react-file-base64';
+
 const styles = theme => ({
   root: {
     width: '100%',
@@ -49,7 +51,38 @@ const styles = theme => ({
   },
   button: {
     margin: theme.spacing(1),
-  }
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+  },
+  input: {
+    fontSize: 16,
+    height: 36,
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#888888',
+    borderWidth: 1,
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
+  button: {
+    backgroundColor: '#3B5998',
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: '500',
+    fontSize: 16,
+  },
+  error: {
+    fontColor: 'red',
+    marginBottom: 10,
+}
 });
 
 redirectToHome = () => {
@@ -63,26 +96,28 @@ class UserProfile extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      edition: false,
-      id: this.props.currentUser._id,
-      email: this.props.currentUser.emails[0].address,
-      name: this.props.currentUser.profile.nome,
-      gender: this.props.currentUser.profile.genero,
-      birthday: this.props.currentUser.profile.datadenascimento,
-      company: this.props.currentUser.profile.empresa,
-      photo: this.props.currentUser.profile.photo,
-    };
-
+    if(this.props.currentUser){
+      this.state = {
+        edition: false,
+        id: this.props.currentUser._id,
+        emailOriginal: this.props.currentUser.emails[0].address,
+        email: this.props.currentUser.emails[0].address,
+        password: this.props.currentUser.password,
+        name: this.props.currentUser.profile.nome,
+        gender: this.props.currentUser.profile.genero,
+        birthday: this.props.currentUser.profile.datadenascimento,
+        company: this.props.currentUser.profile.empresa,
+        photo: this.props.currentUser.profile.photo,
+      };
+    }
   }
 
   handleSubmit(event){
 
     event.preventDefault();
 
-    Meteor.call('Users.update', this.state.id, this.state.name, this.state.email, this.state.birthday, this.state.gender, this.state.company, this.state.photo);
+    Meteor.call('Users.update', this.state.id, this.state.name, this.state.emailOriginal, this.state.email, this.state.password, this.state.birthday, this.state.gender, this.state.company, this.state.photo);
     this.setState({name: "", email: "", gender: "", birthday: "", company: "", photo: ""});
-
   }
 
 
@@ -116,9 +151,14 @@ class UserProfile extends Component {
       });
   }
 
+  handlePhoto(files) {
+   this.setState({
+       photo: files
+     });
+  }
+
   render() {
     const { classes } = this.props;
-
     return (
       <div>
       { this.props.currentUser ?
@@ -139,6 +179,7 @@ class UserProfile extends Component {
                     <TextField
                       id="outlined-helperText"
                       label="Nome"
+                      style={styles.input}
                       value= {this.state.name}
                       variant="outlined"
                       onChange={this.handleName.bind(this)}
@@ -170,7 +211,6 @@ class UserProfile extends Component {
                     <TextField
                       id="outlined-helperText"
                       label="Gênero"
-                      value="feminino"
                       variant="outlined"
                       onChange={this.handleGender.bind(this)}
                       select={true}
@@ -192,35 +232,31 @@ class UserProfile extends Component {
 
                   <ListItem key="file" text="true">
                   <TextField
-                    accept="image/*"
-                    className=""
-                    id="contained-button-file"
-                    multiple
-                    type="file"
+                    type='text'
+                    style={styles.input}
+                    placeholder="Foto"
+                    disabled={true}
+                    autoCapitalize="none"
+                    autoCorrect="false"
                   />
-                  <label htmlFor="contained-button-file">
-                    <Button variant="contained" color="primary" component="span">
-                      Upload
-                    </Button>
-                  </label>
-                  <input accept="image/*" className="" id="icon-button-file" type="file" />
-                  <label htmlFor="icon-button-file">
-                    <IconButton color="primary" aria-label="upload picture" component="span">
-                      <PhotoCamera />
-                    </IconButton>
-                  </label>
+                    <FileBase64
+                      multiple={ true }
+                      onDone={ this.handlePhoto.bind(this)} />
                   </ListItem>
+
+                  <Typography style={styles.error}> { this.state.error } </Typography>
 
                   <ListItem key="submit" text="true">
                     <Button
+                      style={styles.button}
                       label="Submit"
                       primary="true"
                       variant="contained"
-                      color="primary"
                       type='submit'
                       onClick={this.handleSubmit.bind(this)}
                       endIcon={<Icon>send</Icon>}>
-                      Submit </Button>
+                      <Typography style={styles.buttonText}> Submit </Typography>
+                    </Button>
                   </ListItem>
                 </span>
               </List>

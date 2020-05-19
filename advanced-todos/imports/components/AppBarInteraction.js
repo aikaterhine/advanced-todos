@@ -16,6 +16,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 
 import AccountsUIWrapperLogin from '../ui/AccountsUIWrapperLogin.js';
 import AccountsUIWrapperLogout from '../ui/AccountsUIWrapperLogout.js';
+import AccountsUIWrapperRegister from '../ui/AccountsUIWrapperRegister.js';
 
 import App from '../ui/App.js';
 import UserProfile from '../ui/UserProfile.js';
@@ -36,8 +37,11 @@ import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 
+import Icon from '@material-ui/core/Icon';
+import Button from '@material-ui/core/Button';
+
 const drawerWidth = 240;
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 
 const requireAuth = (nextState, replace) => {
   if (isLoggedOut()) {
@@ -72,7 +76,18 @@ const styles = theme => ({
   toolbarMargin: theme.mixins.toolbar,
   aboveDrawer: {
     zIndex: theme.zIndex.drawer + 1
-  }
+  },
+  button: {
+    backgroundColor: '#3B5998',
+    padding: 10,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: '500',
+    fontSize: 16,
+  },
 });
 
 const MyToolbar = withStyles(styles)(
@@ -125,17 +140,50 @@ const MyDrawer = withStyles(styles)(
         <ListItem button component={Link} to="/tasks" onClick={onItemClick('Tasks')}>
           <ListItemText>Tasks</ListItemText>
         </ListItem>
+
         <ListItem>
+          <AccountsUIWrapperLogin />
         </ListItem>
-        <ListItem>
-        {isLoggedIn() ? <AccountsUIWrapperLogout /> : <AccountsUIWrapperLogin />}
-        </ListItem>
+
+        {isLoggedIn() ?
+          <ListItem>
+            <AccountsUIWrapperLogout />
+          </ListItem> :
+
+            <ListItem button component={Link} to="/login" onClick={onItemClick('Login')}>
+              <Button
+                style={styles.button}
+                label="Login"
+                primary="true"
+                variant="contained"
+                type='submit'
+                endIcon={<Icon>send</Icon>}>
+              <Typography style={styles.buttonText}> Login </Typography>
+            </Button>
+        </ListItem> }
+
+        {isLoggedIn() ? "" :
+          <ListItem button component={Link} to="/register" onClick={onItemClick('Register')}>
+              <Button
+                style={styles.button}
+                label="Create Account"
+                primary="true"
+                variant="contained"
+                type='submit'
+                endIcon={<Icon>send</Icon>}>
+                <Typography style={styles.buttonText}> Create Account </Typography>
+              </Button>
+          </ListItem>
+        }
       </List>
     </Drawer>
     <main className={classes.content}>
         <Route exact onEnter={requireAuth} path="/tasks" component={App} />
         <Route exact onEnter={requireAuth} path="/userprofile" component={UserProfile} />
         <Route exact onEnter={requireAuth} path="/welcome" component={Welcome} />
+        <Route exact onEnter={requireAuth} path="/login" component={AccountsUIWrapperLogin} />
+        <Route exact onEnter={requireAuth} path="/logout" component={AccountsUIWrapperLogout} />
+        <Route exact onEnter={requireAuth} path="/register" component={AccountsUIWrapperRegister} />
         <Route exact onEnter={requireAuth} path="/edittasks/:idTask" component={EditTask} />
         <Route onEnter={requireAuth} path="/" component={DashBoard} />
     </main>
