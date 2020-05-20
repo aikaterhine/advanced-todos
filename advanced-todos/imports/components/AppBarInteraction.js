@@ -140,11 +140,7 @@ const MyDrawer = withStyles(styles)(
         <ListItem button component={Link} to="/tasks" onClick={onItemClick('Tasks')}>
           <ListItemText>Tasks</ListItemText>
         </ListItem>
-
-        <ListItem>
-          <AccountsUIWrapperLogin />
-        </ListItem>
-
+        
         {isLoggedIn() ?
           <ListItem>
             <AccountsUIWrapperLogout />
