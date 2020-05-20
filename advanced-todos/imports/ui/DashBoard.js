@@ -20,6 +20,8 @@ import Welcome from './Welcome.js';
 
 import { Tasks } from '../api/tasks.js';
 
+import { Users } from '../api/users.js';
+
 import List from '@material-ui/core/List';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -58,6 +60,7 @@ class DashBoard extends Component {
     // Just render a placeholder container that will be filled in
   render() {
     const { classes } = this.props;
+    //console.log(this.props.users);
 
     return(
       <div className={classes.root}>
@@ -127,6 +130,7 @@ class DashBoard extends Component {
 export default withTracker(() => {
 
   Meteor.subscribe('tasks', "");
+  Meteor.subscribe('Users', "");
 
   return {
     tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
@@ -135,5 +139,6 @@ export default withTracker(() => {
     inprogressState: Tasks.find({ state: "Em Andamento" }).count(),
     completedState: Tasks.find({ state: "Concluída" }).count(),
     currentUser: Meteor.user(),
+    users: Users.find({}).fetch(),
   };
 })(withStyles(styles)(withRouter(DashBoard)));

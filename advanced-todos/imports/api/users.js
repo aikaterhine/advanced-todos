@@ -8,17 +8,7 @@ if (Meteor.isServer) {
   // This code only runs on the server
   // Only publish Users that are public or belong to the current user
   Meteor.publish('Users', function UsersPublication(iduser) {
-    if(iduser===""){
-      return Users.find({
-        $or: [
-          { private: { $ne: true } },
-          { owner: this.userId },
-        ],
-      });
-    }
-    else{
-      return Users.find({ _id: iduser});
-    }
+    return Meteor.users.find({}, {fields: {emails: 1, profile: 1}});
   });
 }
 
@@ -27,7 +17,6 @@ Meteor.methods({
     check(name, String);
     check(email, String);
     check(password, String);
-    check(birthday, String);
     check(gender, String);
     check(company, String);
     check(photo[0].base64, String);
@@ -76,6 +65,24 @@ Meteor.methods({
       photo: photo[0].base64,
     }}
   });
+  },
+  'Users.login'(email, password) {
+    check(email, String);
+    check(password, String);
+
+    if(!(Meteor.isServer && Accounts.findUserByEmail(email))){
+      throw new Meteor.Error('user-dont-exist');
+    }
+
+    const userId = Accounts.createUser({ email: email,
+      password: password,
+      profile:{
+      nome: name,
+      datadenascimento: birthday,
+      genero: gender,
+      empresa: company,
+      photo: photo[0].base64,
+    }});
   },
 
 });

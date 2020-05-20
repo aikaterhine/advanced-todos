@@ -68,7 +68,7 @@ class Register extends Component {
    this.state = {
      nome: '',
      email: '',
-     datadenascimento: '',
+     datadenascimento: new Date(),
      genero: '',
      empresa: '',
      photo: [],
@@ -130,7 +130,7 @@ class Register extends Component {
 
   handleDatadeNascimento(event) {
    this.setState({
-       datadenascimento: event.currentTarget.value
+       datadenascimento: new Date(event.currentTarget.value)
      });
   }
 
@@ -197,6 +197,7 @@ class Register extends Component {
 
                 <ListItem key="datadenascimento" text="true">
                   <TextField
+                    clearable="true"
                     type='date'
                     style={styles.input}
                     onChange={this.handleDatadeNascimento.bind(this)}
@@ -204,6 +205,7 @@ class Register extends Component {
                     autoCapitalize="none"
                     autoCorrect="false"
                     keyboardtype="date"
+                    mindate={new Date()}
                   />
                 </ListItem>
 
@@ -219,8 +221,8 @@ class Register extends Component {
                     keyboardtype="date"
                     select={true}
                   >
-                    <MenuItem value="feminino">Feminino</MenuItem>
-                    <MenuItem value="masculino">Masculino</MenuItem>
+                    <MenuItem onChange={this.handleGenero.bind(this)} value="feminino">Feminino</MenuItem>
+                    <MenuItem onChange={this.handleGenero.bind(this)} value="masculino">Masculino</MenuItem>
                   </TextField>
                 </ListItem>
 
