@@ -108,16 +108,57 @@ class UserProfile extends Component {
         birthday: this.props.currentUser.profile.datadenascimento,
         company: this.props.currentUser.profile.empresa,
         photo: this.props.currentUser.profile.photo,
+        error: null,
       };
     }
+  }
+
+  isValid() {
+    let valid = false;
+
+    if (this.state.email.length > 0 && this.state.password.length > 0 && this.state.name.length > 0 && this.state.company.length > 0 && this.state.gender.length > 0 && this.state.birthday.length > 0 && this.state.photo.length > 0) {
+      valid = true;
+    }
+
+    if (this.state.email.length === 0) {
+      this.setState({ error: 'You must enter an email address' });
+    } else if (this.state.password.length === 0) {
+      this.setState({ error: 'You must enter a password' });
+    } else if (this.state.name.length === 0) {
+      this.setState({ error: 'You must enter a name' });
+    } else if (this.state.company.length === 0) {
+      this.setState({ error: 'You must enter a company' });
+    } else if (this.state.gender.length === 0) {
+      this.setState({ error: 'You must enter a gender' });
+    } else if (this.state.birthday.length === 0) {
+      this.setState({ error: 'You must enter a birthday' });
+    } else if (this.state.photo.length === 0) {
+      this.setState({ error: 'You must enter a photo' });
+    }
+
+    return valid;
+  }
+
+  handleError(event) {
+   this.setState({
+       error: event.currentTarget.value
+     });
   }
 
   handleSubmit(event){
 
     event.preventDefault();
 
-    Meteor.call('Users.update', this.state.id, this.state.name, this.state.emailOriginal, this.state.email, this.state.password, this.state.birthday, this.state.gender, this.state.company, this.state.photo);
-    this.setState({name: "", email: "", gender: "", birthday: "", company: "", photo: ""});
+    if (this.isValid()) {
+      Meteor.call('Users.update', this.state.id, this.state.name, this.state.emailOriginal, this.state.email, this.state.password, this.state.birthday, this.state.gender, this.state.company, this.state.photo, function (error) {
+        if(!error){
+          console.log('You see this because the authentication process was a success')
+        }
+        else {
+          this.handleError;
+        }
+      });
+    }
   }
 
 
@@ -261,7 +302,7 @@ class UserProfile extends Component {
                 </span>
               </List>
             </form>
-        </div> : <div> <Welcome /> </div>
+        </div> : <AccountsUIWrapperLogin />
       }
       </div>
     );

@@ -63,7 +63,7 @@ const styles = theme => ({
 }
 });
 
-class Login extends Component {
+class ForgotPassword extends Component {
 
   constructor(props) {
    super(props);
@@ -77,13 +77,6 @@ class Login extends Component {
 
    this.handleEmail = this.handleEmail.bind(this);
    this.handlePassword = this.handlePassword.bind(this);
-   this.openThisTask = this.openThisTask.bind(this);
-  }
-
-  openThisTask = () => {
-    <Route path={"/register"} component={Register} />
-    this.props.history.push("/register");
-    console.log("parou aqui");
   }
 
   isValid() {
@@ -102,18 +95,20 @@ class Login extends Component {
     return valid;
   }
 
-  onSignIn(event) {
+  changePassword(event) {
     event.preventDefault();
 
     if (this.isValid()) {
-      Meteor.loginWithPassword(this.state.email, this.state.password, function (error) {
+      Meteor.call('Users.forgotpassword', this.state.password, function (error) {
         if(!error){
-          console.log('You see this because the authentication process was a success')
+          console.log('Password reset was a success!')
         }
         else {
+          console.log(error.reason);
           this.handleError;
         }
       });
+      console.log(isLoggedIn());
     }
   }
 
@@ -144,7 +139,7 @@ class Login extends Component {
                 Seja Bem-Vindo!
               </Typography>
               <Typography variant="h6" gutterBottom>
-                Você precisa logar para acessar as tarefas.
+                Você precisa preencher o formulário abaixo para mudar sua senha.
               </Typography>
           </div>
         </header>
@@ -178,13 +173,13 @@ class Login extends Component {
 
                   <Button
                     style={styles.button}
-                    label="Sign In"
+                    label="Change"
                     primary="true"
                     variant="contained"
                     type='submit'
-                    onClick={this.onSignIn.bind(this)}
+                    onClick={this.changePassword.bind(this)}
                     endIcon={<Icon>send</Icon>}>
-                    <Typography style={styles.buttonText}> Sign In </Typography>
+                    <Typography style={styles.buttonText}> Change Password </Typography>
                   </Button>
                 </form>
           </Grid>
@@ -194,4 +189,4 @@ class Login extends Component {
   }
 }
 
-export default withStyles(styles)((Login));
+export default withStyles(styles)((ForgotPassword));

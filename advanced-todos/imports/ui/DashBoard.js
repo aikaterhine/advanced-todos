@@ -60,7 +60,6 @@ class DashBoard extends Component {
     // Just render a placeholder container that will be filled in
   render() {
     const { classes } = this.props;
-    //console.log(this.props.users);
 
     return(
       <div className={classes.root}>
