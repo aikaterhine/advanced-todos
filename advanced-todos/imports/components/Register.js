@@ -73,6 +73,7 @@ class Register extends Component {
      empresa: '',
      photo: [],
      password: '',
+     error: null,
    }
 
    this.onCreateAccount = this.onCreateAccount.bind(this);
@@ -89,7 +90,7 @@ class Register extends Component {
   isValid() {
     let valid = false;
 
-    if (this.state.email.length > 0 && this.state.password.length > 0 && this.state.nome.length > 0 && this.state.empresa.length > 0) {
+    if (this.state.email.length > 0 && this.state.password.length > 0 && this.state.Nome.length > 0 && this.state.empresa.length > 0 && this.state.genero.length > 0 && this.state.datadenascimento.length > 0 && this.state.photo.length > 0) {
       valid = true;
     }
 
@@ -101,6 +102,12 @@ class Register extends Component {
       this.setState({ error: 'You must enter a name' });
     } else if (this.state.empresa.length === 0) {
       this.setState({ error: 'You must enter a company' });
+    } else if (this.state.genero.length === 0) {
+      this.setState({ error: 'You must enter a gender' });
+    } else if (this.state.datadenascimento.length === 0) {
+      this.setState({ error: 'You must enter a birthday' });
+    } else if (this.state.photo.length === 0) {
+      this.setState({ error: 'You must enter a photo' });
     }
 
     return valid;
@@ -114,12 +121,20 @@ class Register extends Component {
 
       Meteor.call('Users.insert', this.state.nome,  this.state.email, this.state.password, this.state.datadenascimento, this.state.genero, this.state.empresa, this.state.photo,
        (error) => {
-        if(error) {
-          this.setState({ error: error.reason });
+        if(!error){
+          console.log('You see this because the authentication process was a success')
+        }
+        else {
+          this.handleError;
         }
       });
-      this.setState({nome: "", email: "", password: "", datadenascimento: "", genero: "", empresa: "", photo: ""});
     }
+  }
+
+  handleError(event) {
+   this.setState({
+       error: event.currentTarget.value
+     });
   }
 
   handleNome(event) {

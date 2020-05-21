@@ -41,7 +41,7 @@ class Logout extends Component {
 
   render() {
 
-    const nome = Meteor.user().profile.nome;
+    const nome = Meteor.user() && Meteor.user().profile ? Meteor.user().profile.nome:'SemNome';
 
     return (
 

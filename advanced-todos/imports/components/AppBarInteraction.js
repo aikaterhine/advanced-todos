@@ -17,6 +17,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import AccountsUIWrapperLogin from '../ui/AccountsUIWrapperLogin.js';
 import AccountsUIWrapperLogout from '../ui/AccountsUIWrapperLogout.js';
 import AccountsUIWrapperRegister from '../ui/AccountsUIWrapperRegister.js';
+import AccountsUIWrapperForgotPassword from '../ui/AccountsUIWrapperForgotPassword.js';
 
 import App from '../ui/App.js';
 import UserProfile from '../ui/UserProfile.js';
@@ -140,7 +141,7 @@ const MyDrawer = withStyles(styles)(
         <ListItem button component={Link} to="/tasks" onClick={onItemClick('Tasks')}>
           <ListItemText>Tasks</ListItemText>
         </ListItem>
-        
+
         {isLoggedIn() ?
           <ListItem>
             <AccountsUIWrapperLogout />
@@ -155,6 +156,20 @@ const MyDrawer = withStyles(styles)(
                 type='submit'
                 endIcon={<Icon>send</Icon>}>
               <Typography style={styles.buttonText}> Login </Typography>
+            </Button>
+        </ListItem> }
+
+        {isLoggedIn() ? "" :
+
+            <ListItem button component={Link} to="/forgotpassword" onClick={onItemClick('Forgot Password')}>
+              <Button
+                style={styles.button}
+                label="ForgotPassword"
+                primary="true"
+                variant="contained"
+                type='submit'
+                endIcon={<Icon>send</Icon>}>
+              <Typography style={styles.buttonText}> Forgot Password </Typography>
             </Button>
         </ListItem> }
 
@@ -179,6 +194,7 @@ const MyDrawer = withStyles(styles)(
         <Route exact onEnter={requireAuth} path="/welcome" component={Welcome} />
         <Route exact onEnter={requireAuth} path="/login" component={AccountsUIWrapperLogin} />
         <Route exact onEnter={requireAuth} path="/logout" component={AccountsUIWrapperLogout} />
+        <Route exact onEnter={requireAuth} path="/forgotpassword" component={AccountsUIWrapperForgotPassword} />
         <Route exact onEnter={requireAuth} path="/register" component={AccountsUIWrapperRegister} />
         <Route exact onEnter={requireAuth} path="/edittasks/:idTask" component={EditTask} />
         <Route onEnter={requireAuth} path="/" component={DashBoard} />

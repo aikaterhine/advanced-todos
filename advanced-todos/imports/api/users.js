@@ -84,5 +84,16 @@ Meteor.methods({
       photo: photo[0].base64,
     }});
   },
+  'Users.forgotpassword'(email, password) {
+    check(email, String);
+    check(password, String);
 
+    if(!(Meteor.isServer && Accounts.findUserByEmail(email))){
+      throw new Meteor.Error('user-dont-exist');
+    }
+
+    const userId = Accounts.findUserByEmail(email);
+
+    Accounts.changePassword(userId, password);
+  },
 });

@@ -20,6 +20,7 @@ import Typography from '@material-ui/core/Typography';
 import AddChoreForm from '../components/AddChoreForm.js'
 import ResponsiveDrawer from '../components/ResponsiveDrawer.js'
 import Welcome from './Welcome.js';
+import AccountsUIWrapperLogin from './AccountsUIWrapperLogin.js';
 
 // App component - represents the whole app
 class App extends Component {
@@ -97,7 +98,7 @@ class App extends Component {
             </header>
 
             {this.renderTasks()}
-        </div> : <div> <Welcome /> </div>
+        </div> : <AccountsUIWrapperLogin />
       }
       </div>
     );
